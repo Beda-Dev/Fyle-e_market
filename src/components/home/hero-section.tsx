@@ -54,13 +54,13 @@ export function HeroSection() {
                 Profitez d&apos;une expérience d&apos;achat unique et personnalisée.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                <Button size="lg" asChild className="text-base">
+                <Button size="lg"  className="text-base">
                   <Link href="/products">
                     Explorer la boutique
                     <ArrowRight data-icon="inline-end" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" asChild className="text-base">
+                <Button size="lg" variant="outline" className="text-base">
                   <Link href="/categories">
                     Voir les catégories
                   </Link>

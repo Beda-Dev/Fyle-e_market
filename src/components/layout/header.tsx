@@ -64,7 +64,7 @@ export function Header() {
         }`}
       >
         {/* Top bar */}
-        <div className="hidden lg:block bg-[#73442A] text-white py-2">
+        {/* <div className="hidden lg:block bg-[#73442A] text-white py-2">
           <div className="container mx-auto px-4 flex items-center justify-between text-sm">
             <p>Livraison gratuite pour les commandes de plus de 50 000 FCFA</p>
             <div className="flex items-center gap-6">
@@ -76,7 +76,7 @@ export function Header() {
               </Link>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Main header */}
         <div className="container mx-auto px-4">
@@ -217,7 +217,7 @@ export function Header() {
 
               {/* Mobile Menu Button */}
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-                <SheetTrigger asChild>
+                <SheetTrigger >
                   <Button
                     variant="ghost"
                     size="icon"
