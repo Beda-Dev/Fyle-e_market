@@ -97,7 +97,7 @@ export function AdminDashboard() {
       value: products.length.toString(),
       change: "",
       icon: Package,
-      color: "text-[#F07C1E]",
+      color: "text-brand-orange",
       bgColor: "bg-orange-50",
     },
     {
@@ -118,7 +118,7 @@ export function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/" className="flex items-center gap-2">
-                <div className="relative size-10 bg-[#73442A] rounded-lg p-1">
+                <div className="relative size-10 bg-brand-brown rounded-lg p-1">
                   <Image
                     src="/logo eburnie.png"
                     alt="Eburnie"
@@ -127,7 +127,7 @@ export function AdminDashboard() {
                   />
                 </div>
                 <div>
-                  <span className="font-heading font-bold text-lg text-[#73442A]">Eburnie</span>
+                  <span className="font-heading font-bold text-lg text-brand-brown">Eburnie</span>
                   <Badge variant="secondary" className="ml-2 text-xs">Admin</Badge>
                 </div>
               </Link>
@@ -183,7 +183,7 @@ export function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">Commandes récentes</CardTitle>
                 <Link href="/admin/orders">
-                  <Button variant="ghost" size="sm" className="gap-1 text-[#F07C1E]">
+                  <Button variant="ghost" size="sm" className="gap-1 text-brand-orange">
                     Voir tout
                     <ArrowUpRight className="size-4" />
                   </Button>
@@ -228,7 +228,7 @@ export function AdminDashboard() {
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">Stock faible</CardTitle>
                 <Link href="/admin/products">
-                  <Button variant="ghost" size="sm" className="gap-1 text-[#F07C1E]">
+                  <Button variant="ghost" size="sm" className="gap-1 text-brand-orange">
                     Gérer les produits
                     <ArrowUpRight className="size-4" />
                   </Button>
@@ -274,17 +274,17 @@ export function AdminDashboard() {
           <h2 className="font-heading text-lg font-semibold mb-4">Actions rapides</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Link href="/admin/products/new">
-              <Card className="hover:border-[#F07C1E] transition-colors cursor-pointer">
+              <Card className="hover:border-brand-orange transition-colors cursor-pointer">
                 <CardContent className="p-4 flex flex-col items-center text-center">
                   <div className="size-12 rounded-full bg-orange-50 flex items-center justify-center mb-3">
-                    <Package className="size-6 text-[#F07C1E]" />
+                    <Package className="size-6 text-brand-orange" />
                   </div>
                   <p className="font-medium text-sm">Ajouter un produit</p>
                 </CardContent>
               </Card>
             </Link>
             <Link href="/admin/orders">
-              <Card className="hover:border-[#F07C1E] transition-colors cursor-pointer">
+              <Card className="hover:border-brand-orange transition-colors cursor-pointer">
                 <CardContent className="p-4 flex flex-col items-center text-center">
                   <div className="size-12 rounded-full bg-blue-50 flex items-center justify-center mb-3">
                     <ShoppingCart className="size-6 text-blue-600" />
@@ -294,7 +294,7 @@ export function AdminDashboard() {
               </Card>
             </Link>
             <Link href="/admin/products">
-              <Card className="hover:border-[#F07C1E] transition-colors cursor-pointer">
+              <Card className="hover:border-brand-orange transition-colors cursor-pointer">
                 <CardContent className="p-4 flex flex-col items-center text-center">
                   <div className="size-12 rounded-full bg-green-50 flex items-center justify-center mb-3">
                     <Eye className="size-6 text-green-600" />
@@ -304,7 +304,7 @@ export function AdminDashboard() {
               </Card>
             </Link>
             <Link href="/">
-              <Card className="hover:border-[#F07C1E] transition-colors cursor-pointer">
+              <Card className="hover:border-brand-orange transition-colors cursor-pointer">
                 <CardContent className="p-4 flex flex-col items-center text-center">
                   <div className="size-12 rounded-full bg-purple-50 flex items-center justify-center mb-3">
                     <Home className="size-6 text-purple-600" />

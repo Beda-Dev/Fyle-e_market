@@ -44,7 +44,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
             {product.isNew && (
-              <Badge className="bg-[#73442A] text-white hover:bg-[#73442A]">
+              <Badge className="bg-brand-brown text-white hover:bg-brand-brown">
                 Nouveau
               </Badge>
             )}

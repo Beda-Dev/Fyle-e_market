@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
@@ -58,7 +58,7 @@ export default function LoginPage() {
         style={{ backgroundColor: "#F9DEC9" }}
       >
         <div className="relative z-10 flex flex-col justify-between w-full px-12 py-12">
-          <h1 className="text-xl font-semibold" style={{ color: "#73442A" }}>Eburnie</h1>
+          <h1 className="text-xl font-semibold" style={{ color: "var(--color-brand-brown)" }}>Eburnie</h1>
 
           <div className="flex-1 flex flex-col items-center justify-center gap-8">
             <motion.div
@@ -76,16 +76,16 @@ export default function LoginPage() {
               />
             </motion.div>
             <div className="text-center">
-              <h2 className="font-heading text-3xl mb-3 leading-tight" style={{ color: "#73442A" }}>
+              <h2 className="font-heading text-3xl mb-3 leading-tight" style={{ color: "var(--color-brand-brown)" }}>
                 Gérez facilement vos achats en ligne.
               </h2>
-              <p className="text-base leading-relaxed" style={{ color: "#666666" }}>
+              <p className="text-base leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>
                 Connectez-vous pour accéder à votre compte et gérer vos commandes.
               </p>
             </div>
           </div>
 
-          <div className="flex justify-between items-center text-sm" style={{ color: "#666666" }}>
+          <div className="flex justify-between items-center text-sm" style={{ color: "var(--color-text-secondary)" }}>
             <span>Copyright © 2025 Eburnie.</span>
             <span className="cursor-pointer hover:opacity-80">Politique de confidentialité</span>
           </div>
@@ -104,7 +104,7 @@ export default function LoginPage() {
                 priority
               />
             </div>
-            <h1 className="text-xl font-semibold" style={{ color: "#73442A" }}>Eburnie</h1>
+            <h1 className="text-xl font-semibold" style={{ color: "var(--color-brand-brown)" }}>Eburnie</h1>
           </div>
 
           <div className="space-y-6">
@@ -114,15 +114,15 @@ export default function LoginPage() {
               </div>
             )}
             <div className="space-y-2 text-center">
-              <h2 className="text-3xl" style={{ color: "#73442A" }}>Bienvenue</h2>
-              <p style={{ color: "#666666" }}>
+              <h2 className="text-3xl" style={{ color: "var(--color-brand-brown)" }}>Bienvenue</h2>
+              <p style={{ color: "var(--color-text-secondary)" }}>
                 Entrez votre email et mot de passe pour accéder à votre compte.
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium" style={{ color: "#73442A" }}>
+                <Label htmlFor="email" className="text-sm font-medium" style={{ color: "var(--color-brand-brown)" }}>
                   Email
                 </Label>
                 <Input
@@ -132,12 +132,12 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#F07C1E]"
+                  className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-brand-orange"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium" style={{ color: "#73442A" }}>
+                <Label htmlFor="password" className="text-sm font-medium" style={{ color: "var(--color-brand-brown)" }}>
                   Mot de passe
                 </Label>
                 <div className="relative">
@@ -148,7 +148,7 @@ export default function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="h-12 pr-10 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#F07C1E]"
+                    className="h-12 pr-10 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-brand-orange"
                   />
                   <Button
                     type="button"
@@ -169,14 +169,14 @@ export default function LoginPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <input type="checkbox" id="remember" className="rounded border-gray-300 cursor-pointer" />
-                  <Label htmlFor="remember" className="text-sm cursor-pointer" style={{ color: "#666666" }}>
+                  <Label htmlFor="remember" className="text-sm cursor-pointer" style={{ color: "var(--color-text-secondary)" }}>
                     Se souvenir de moi
                   </Label>
                 </div>
                 <Button
                   variant="link"
                   className="p-0 h-auto text-sm hover:text-opacity-80 cursor-pointer"
-                  style={{ color: "#F07C1E" }}
+                  style={{ color: "var(--color-brand-orange)" }}
                 >
                   Mot de passe oublié ?
                 </Button>
@@ -186,9 +186,10 @@ export default function LoginPage() {
                 type="submit"
                 disabled={isLoading}
                 className="w-full h-12 text-sm font-medium text-white hover:opacity-90 rounded-lg shadow-none cursor-pointer"
-                style={{ backgroundColor: "#F07C1E" }}
+                style={{ backgroundColor: "var(--color-brand-orange)" }}
               >
-                {isLoading ? "Connexion..." : "Se connecter"}
+                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Se connecter"}
+
               </Button>
             </form>
 
@@ -198,7 +199,7 @@ export default function LoginPage() {
                   <Separator className="w-full" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2" style={{ color: "#666666" }}>
+                  <span className="bg-white px-2" style={{ color: "var(--color-text-secondary)" }}>
                     Ou se connecter avec
                   </span>
                 </div>
@@ -229,7 +230,7 @@ export default function LoginPage() {
                   </svg>
                   Google
                 </Button>
-                <Button
+                {/* <Button
                   variant="outline"
                   className="h-12 border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-lg bg-white shadow-none cursor-pointer"
                 >
@@ -237,16 +238,16 @@ export default function LoginPage() {
                     <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-.96 3.64-.82 1.57.06 2.75.63 3.54 1.51-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
                   </svg>
                   Apple
-                </Button>
+                </Button> */}
               </div>
             </>
 
-            <div className="text-center text-sm" style={{ color: "#666666" }}>
+            <div className="text-center text-sm" style={{ color: "var(--color-text-secondary)" }}>
               Pas encore de compte ?{" "}
               <Link
                 href="/register"
                 className="hover:opacity-80 font-medium"
-                style={{ color: "#F07C1E" }}
+                style={{ color: "var(--color-brand-orange)" }}
               >
                 S'inscrire maintenant.
               </Link>

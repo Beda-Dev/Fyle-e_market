@@ -196,7 +196,7 @@ export function ProductsContent({ products, categories }: ProductsContentProps) 
     <div className="container mx-auto px-4 py-8">
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="font-heading font-bold text-3xl lg:text-4xl text-[#73442A]">
+        <h1 className="font-heading font-bold text-3xl lg:text-4xl text-brand-brown">
           {selectedCategory
             ? categories.find((c) => c.slug === selectedCategory)?.name ||
               "Boutique"

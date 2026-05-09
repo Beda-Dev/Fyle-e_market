@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, Loader2 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
@@ -95,7 +95,7 @@ export default function RegisterPage() {
         style={{ backgroundColor: "#F9DEC9" }}
       >
         <div className="relative z-10 flex flex-col justify-between w-full px-12 py-12">
-          <h1 className="text-xl font-semibold" style={{ color: "#73442A" }}>Eburnie</h1>
+          <h1 className="text-xl font-semibold" style={{ color: "var(--color-brand-brown)" }}>Eburnie</h1>
 
           <div className="flex-1 flex flex-col items-center justify-center gap-8">
             <motion.div
@@ -113,16 +113,16 @@ export default function RegisterPage() {
               />
             </motion.div>
             <div className="text-center">
-              <h2 className="font-heading text-3xl mb-3 leading-tight" style={{ color: "#73442A" }}>
+              <h2 className="font-heading text-3xl mb-3 leading-tight" style={{ color: "var(--color-brand-brown)" }}>
                 Rejoignez Eburnie dès maintenant.
               </h2>
-              <p className="text-base leading-relaxed" style={{ color: "#666666" }}>
+              <p className="text-base leading-relaxed" style={{ color: "var(--color-text-secondary)" }}>
                 Créez un compte pour profiter de nos offres et gérer vos commandes.
               </p>
             </div>
           </div>
 
-          <div className="flex justify-between items-center text-sm" style={{ color: "#666666" }}>
+          <div className="flex justify-between items-center text-sm" style={{ color: "var(--color-text-secondary)" }}>
             <span>Copyright © 2025 Eburnie.</span>
             <span className="cursor-pointer hover:opacity-80">Politique de confidentialité</span>
           </div>
@@ -141,7 +141,7 @@ export default function RegisterPage() {
                 priority
               />
             </div>
-            <h1 className="text-xl font-semibold" style={{ color: "#73442A" }}>Eburnie</h1>
+            <h1 className="text-xl font-semibold" style={{ color: "var(--color-brand-brown)" }}>Eburnie</h1>
           </div>
 
           <div className="space-y-6">
@@ -151,8 +151,8 @@ export default function RegisterPage() {
               </div>
             )}
             <div className="space-y-2 text-center">
-              <h2 className="text-3xl" style={{ color: "#73442A" }}>Créer un compte</h2>
-              <p style={{ color: "#666666" }}>
+              <h2 className="text-3xl" style={{ color: "var(--color-brand-brown)" }}>Créer un compte</h2>
+              <p style={{ color: "var(--color-text-secondary)" }}>
                 Créez un nouveau compte pour commencer sur Eburnie.
               </p>
             </div>
@@ -160,7 +160,7 @@ export default function RegisterPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="firstName" className="text-sm font-medium" style={{ color: "#73442A" }}>
+                  <Label htmlFor="firstName" className="text-sm font-medium" style={{ color: "var(--color-brand-brown)" }}>
                     Prénom
                   </Label>
                   <Input
@@ -170,12 +170,12 @@ export default function RegisterPage() {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     required
-                    className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#F07C1E]"
+                    className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-brand-orange"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="lastName" className="text-sm font-medium" style={{ color: "#73442A" }}>
+                  <Label htmlFor="lastName" className="text-sm font-medium" style={{ color: "var(--color-brand-brown)" }}>
                     Nom
                   </Label>
                   <Input
@@ -185,13 +185,13 @@ export default function RegisterPage() {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     required
-                    className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#F07C1E]"
+                    className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-brand-orange"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium" style={{ color: "#73442A" }}>
+                <Label htmlFor="email" className="text-sm font-medium" style={{ color: "var(--color-brand-brown)" }}>
                   Email
                 </Label>
                 <Input
@@ -201,12 +201,12 @@ export default function RegisterPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#F07C1E]"
+                  className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-brand-orange"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="phone" className="text-sm font-medium" style={{ color: "#73442A" }}>
+                <Label htmlFor="phone" className="text-sm font-medium" style={{ color: "var(--color-brand-brown)" }}>
                   Téléphone (optionnel)
                 </Label>
                 <Input
@@ -215,12 +215,12 @@ export default function RegisterPage() {
                   placeholder="+33 6 12 34 56 78"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#F07C1E]"
+                  className="h-12 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-brand-orange"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium" style={{ color: "#73442A" }}>
+                <Label htmlFor="password" className="text-sm font-medium" style={{ color: "var(--color-brand-brown)" }}>
                   Mot de passe
                 </Label>
                 <div className="relative">
@@ -231,7 +231,7 @@ export default function RegisterPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="h-12 pr-10 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#F07C1E]"
+                    className="h-12 pr-10 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-brand-orange"
                   />
                   <Button
                     type="button"
@@ -250,7 +250,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-sm font-medium" style={{ color: "#73442A" }}>
+                <Label htmlFor="confirmPassword" className="text-sm font-medium" style={{ color: "var(--color-brand-brown)" }}>
                   Confirmer le mot de passe
                 </Label>
                 <div className="relative">
@@ -261,7 +261,7 @@ export default function RegisterPage() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
-                    className="h-12 pr-10 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-[#F07C1E]"
+                    className="h-12 pr-10 border-gray-200 focus:ring-0 shadow-none rounded-lg bg-white focus:border-brand-orange"
                   />
                   <Button
                     type="button"
@@ -283,9 +283,9 @@ export default function RegisterPage() {
                 type="submit"
                 disabled={isLoading}
                 className="w-full h-12 text-sm font-medium text-white hover:opacity-90 rounded-lg shadow-none cursor-pointer"
-                style={{ backgroundColor: "#F07C1E" }}
+                style={{ backgroundColor: "var(--color-brand-orange)" }}
               >
-                {isLoading ? "Création du compte..." : "Créer un compte"}
+                {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Créer un compte"}
               </Button>
             </form>
 
@@ -295,7 +295,7 @@ export default function RegisterPage() {
                   <Separator className="w-full" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2" style={{ color: "#666666" }}>
+                  <span className="bg-white px-2" style={{ color: "var(--color-text-secondary)" }}>
                     Ou s'inscrire avec
                   </span>
                 </div>
@@ -326,24 +326,15 @@ export default function RegisterPage() {
                   </svg>
                   Google
                 </Button>
-                <Button
-                  variant="outline"
-                  className="h-12 border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-lg bg-white shadow-none cursor-pointer"
-                >
-                  <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-.96 3.64-.82 1.57.06 2.75.63 3.54 1.51-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-                  </svg>
-                  Apple
-                </Button>
               </div>
             </>
 
-            <div className="text-center text-sm" style={{ color: "#666666" }}>
+            <div className="text-center text-sm" style={{ color: "var(--color-text-secondary)" }}>
               Déjà un compte ?{" "}
               <Link
                 href="/login"
                 className="hover:opacity-80 font-medium"
-                style={{ color: "#F07C1E" }}
+                style={{ color: "var(--color-brand-orange)" }}
               >
                 Se connecter.
               </Link>

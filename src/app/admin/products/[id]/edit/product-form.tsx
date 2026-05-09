@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { CameraCapture } from "@/components/admin/camera-capture"
 import type { Category } from "@/lib/mock-data"
+import type { Product } from "@prisma/client"
 
 // ─── slugify ─────────────────────────────────────────────────────────────
 function slugify(s: string) {
@@ -44,7 +45,11 @@ interface UploadedImage {
   url: string
 }
 
-export function ProductForm() {
+interface ProductFormProps {
+  product: Product
+}
+
+export function ProductForm({ product }: ProductFormProps) {
   const router = useRouter()
   const [categories, setCategories] = useState<Category[]>([])
   const [cameraOpen, setCameraOpen] = useState(false)
@@ -53,19 +58,24 @@ export function ProductForm() {
   const [dragOver, setDragOver] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // form state
-  const [name, setName] = useState("")
-  const [slug, setSlug] = useState("")
+  // form state - pré-rempli avec les données du produit
+  const [name, setName] = useState(product.name)
+  const [slug, setSlug] = useState(product.slug)
   const [slugTouched, setSlugTouched] = useState(false)
-  const [description, setDescription] = useState("")
-  const [price, setPrice] = useState("")
-  const [originalPrice, setOriginalPrice] = useState("")
-  const [stock, setStock] = useState("0")
-  const [categoryId, setCategoryId] = useState("")
-  const [isFeatured, setIsFeatured] = useState(false)
-  const [isNew, setIsNew] = useState(true)
-  const [isActive, setIsActive] = useState(true)
+  const [description, setDescription] = useState(product.description)
+  const [price, setPrice] = useState(product.price.toString())
+  const [originalPrice, setOriginalPrice] = useState(product.originalPrice.toString())
+  const [stock, setStock] = useState(product.stock.toString())
+  const [categoryId, setCategoryId] = useState(product.categoryId)
+  const [isFeatured, setIsFeatured] = useState(product.isFeatured)
+  const [isNew, setIsNew] = useState(product.isNew)
+  const [isActive, setIsActive] = useState(product.isActive)
   const [images, setImages] = useState<PendingImage[]>([])
+
+  // Images existantes du produit
+  const [existingImages, setExistingImages] = useState<string[]>(
+    (product.images as string[]) || []
+  )
 
   useEffect(() => {
     fetch("/api/categories")
@@ -116,6 +126,10 @@ export function ProductForm() {
     })
   }
 
+  const removeExistingImage = (url: string) => {
+    setExistingImages((prev) => prev.filter((img) => img !== url))
+  }
+
   const moveImage = (id: string, direction: "up" | "down") => {
     setImages((prev) => {
       const idx = prev.findIndex((i) => i.id === id)
@@ -143,7 +157,9 @@ export function ProductForm() {
     e.preventDefault()
     setError(null)
 
-    if (images.length === 0) {
+    // Vérifier qu'il y a au moins une image (existante ou nouvelle)
+    const totalImages = existingImages.length + images.length
+    if (totalImages === 0) {
       setError("Ajoute au moins une image")
       return
     }
@@ -160,27 +176,37 @@ export function ProductForm() {
 
     setSubmitting(true)
     try {
-      // 1) upload toutes les images en une requete
-      const fd = new FormData()
-      for (const img of images) fd.append("files", img.file)
-      const uploadRes = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: fd,
-      })
-      const uploadJson = await uploadRes.json()
-      if (!uploadRes.ok) {
-        throw new Error(uploadJson.error || "Upload echoue")
+      let finalImageUrl = product.imageUrl
+      let finalImagePublicId = product.imagePublicId
+      let finalGallery: string[] = existingImages
+
+      // 1) Upload des nouvelles images si présentes
+      if (images.length > 0) {
+        const fd = new FormData()
+        for (const img of images) fd.append("files", img.file)
+        const uploadRes = await fetch("/api/admin/upload", {
+          method: "POST",
+          body: fd,
+        })
+        const uploadJson = await uploadRes.json()
+        if (!uploadRes.ok) {
+          throw new Error(uploadJson.error || "Upload echoue")
+        }
+        const uploaded: UploadedImage[] = Array.isArray(uploadJson.data)
+          ? uploadJson.data
+          : [uploadJson.data]
+
+        // Utiliser la nouvelle image principale si uploadée
+        if (uploaded.length > 0) {
+          finalImageUrl = uploaded[0].url
+          finalImagePublicId = uploaded[0].publicId
+          finalGallery = [...existingImages, ...uploaded.slice(1).map((u) => u.url)]
+        }
       }
-      const uploaded: UploadedImage[] = Array.isArray(uploadJson.data)
-        ? uploadJson.data
-        : [uploadJson.data]
 
-      // 2) creer le produit
-      const main = uploaded[0]
-      const gallery = uploaded.slice(1).map((u) => u.url)
-
-      const createRes = await fetch("/api/admin/products", {
-        method: "POST",
+      // 2) Mettre à jour le produit
+      const updateRes = await fetch(`/api/admin/products/${product.id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
@@ -189,18 +215,18 @@ export function ProductForm() {
           price: priceNum,
           originalPrice: origPriceNum,
           stock: Number(stock),
-          imageUrl: main.url,
-          imagePublicId: main.publicId,
-          images: gallery,
+          imageUrl: finalImageUrl,
+          imagePublicId: finalImagePublicId,
+          images: finalGallery,
           isFeatured,
           isNew,
           isActive,
           categoryId,
         }),
       })
-      const createJson = await createRes.json()
-      if (!createRes.ok) {
-        throw new Error(createJson.error || "Creation echouee")
+      const updateJson = await updateRes.json()
+      if (!updateRes.ok) {
+        throw new Error(updateJson.error || "Mise à jour echouee")
       }
 
       router.push("/admin/products")
@@ -223,9 +249,9 @@ export function ProductForm() {
               </Button>
             </Link>
             <div>
-              <h1 className="font-heading font-bold text-lg">Nouveau produit</h1>
+              <h1 className="font-heading font-bold text-lg">Modifier le produit</h1>
               <p className="text-sm text-muted-foreground">
-                Remplissez les informations ci-dessous
+                {product.name}
               </p>
             </div>
           </div>
@@ -251,10 +277,50 @@ export function ProductForm() {
               </motion.div>
             )}
 
-            {/* ─── Images ─── */}
+            {/* ─── Images existantes ─── */}
+            {existingImages.length > 0 && (
+              <section className="flex flex-col gap-3">
+                <Label style={{ color: "var(--color-brand-brown)" }} className="font-medium">
+                  Images actuelles
+                </Label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {existingImages.map((url, idx) => (
+                    <div
+                      key={url}
+                      className="relative group aspect-square rounded-lg overflow-hidden border bg-muted"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={url}
+                        alt={`Image ${idx + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                      {idx === 0 && (
+                        <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium flex items-center gap-1">
+                          <Star className="size-3 fill-current" />
+                          Principale
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <button
+                          type="button"
+                          onClick={() => removeExistingImage(url)}
+                          className="size-8 rounded-full bg-destructive hover:bg-destructive/90 text-white flex items-center justify-center"
+                          title="Supprimer"
+                        >
+                          <X className="size-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* ─── Nouvelles images ─── */}
             <section className="flex flex-col gap-3">
               <Label style={{ color: "var(--color-brand-brown)" }} className="font-medium">
-                Photos du produit
+                Ajouter de nouvelles photos
               </Label>
 
               <div
@@ -339,24 +405,7 @@ export function ProductForm() {
                           className="w-full h-full object-cover"
                         />
 
-                        {idx === 0 && (
-                          <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium flex items-center gap-1">
-                            <Star className="size-3 fill-current" />
-                            Principale
-                          </div>
-                        )}
-
                         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                          {idx !== 0 && (
-                            <button
-                              type="button"
-                              onClick={() => setMainImage(img.id)}
-                              className="size-8 rounded-full bg-white/90 hover:bg-white text-foreground flex items-center justify-center"
-                              title="Definir comme principale"
-                            >
-                              <Star className="size-4" />
-                            </button>
-                          )}
                           <button
                             type="button"
                             onClick={() => moveImage(img.id, "up")}
@@ -394,7 +443,7 @@ export function ProductForm() {
             {/* ─── Champs ─── */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2 flex flex-col gap-2">
-                <Label htmlFor="name" style={{ color: "#73442A" }}>
+                <Label htmlFor="name" style={{ color: "var(--color-brand-brown)" }}>
                   Nom du produit
                 </Label>
                 <Input
@@ -408,7 +457,7 @@ export function ProductForm() {
               </div>
 
               <div className="sm:col-span-2 flex flex-col gap-2">
-                <Label htmlFor="slug" style={{ color: "#73442A" }}>
+                <Label htmlFor="slug" style={{ color: "var(--color-brand-brown)" }}>
                   Slug (URL)
                 </Label>
                 <Input
@@ -428,7 +477,7 @@ export function ProductForm() {
               </div>
 
               <div className="sm:col-span-2 flex flex-col gap-2">
-                <Label htmlFor="description" style={{ color: "#73442A" }}>
+                <Label htmlFor="description" style={{ color: "var(--color-brand-brown)" }}>
                   Description
                 </Label>
                 <textarea
@@ -443,7 +492,7 @@ export function ProductForm() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <Label htmlFor="price" style={{ color: "#73442A" }}>
+                <Label htmlFor="price" style={{ color: "var(--color-brand-brown)" }}>
                   Prix (FCFA)
                 </Label>
                 <Input
@@ -460,7 +509,7 @@ export function ProductForm() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <Label htmlFor="originalPrice" style={{ color: "#73442A" }}>
+                <Label htmlFor="originalPrice" style={{ color: "var(--color-brand-brown)" }}>
                   Prix barre (optionnel)
                 </Label>
                 <Input
@@ -476,7 +525,7 @@ export function ProductForm() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <Label htmlFor="stock" style={{ color: "#73442A" }}>
+                <Label htmlFor="stock" style={{ color: "var(--color-brand-brown)" }}>
                   Stock
                 </Label>
                 <Input
@@ -491,7 +540,7 @@ export function ProductForm() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <Label htmlFor="categoryId" style={{ color: "#73442A" }}>
+                <Label htmlFor="categoryId" style={{ color: "var(--color-brand-brown)" }}>
                   Categorie
                 </Label>
                 <select
@@ -548,10 +597,10 @@ export function ProductForm() {
                 {submitting ? (
                   <>
                     <Loader2 className="size-4 animate-spin" />
-                    Publication...
+                    Mise à jour...
                   </>
                 ) : (
-                  "Publier le produit"
+                  "Mettre à jour"
                 )}
               </Button>
             </div>

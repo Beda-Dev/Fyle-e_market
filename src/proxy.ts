@@ -4,6 +4,7 @@ import { NextResponse } from "next/server"
 // Routes protegees par role:
 // - /admin/*  : ADMIN uniquement
 // - /orders   : tout user connecte
+// - /profile  : tout user connecte
 export default withAuth(
   function middleware(req) {
     const path = req.nextUrl.pathname
@@ -26,5 +27,5 @@ export default withAuth(
 )
 
 export const config = {
-  matcher: ["/admin/:path*", "/orders/:path*"],
+  matcher: ["/admin/:path*", "/orders/:path*", "/profile/:path*"],
 }

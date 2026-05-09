@@ -44,9 +44,9 @@ export function HeroSection() {
               className="relative z-10"
             >
               <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
-                Nouvelle Collection 2024
+                Nouvelle Collection {new Date().getFullYear()}
               </span>
-              <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl text-[#73442A] leading-tight text-balance">
+              <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl text-brand-brown leading-tight text-balance">
                 Découvrez le meilleur du shopping en ligne
               </h1>
               <p className="mt-6 text-lg text-muted-foreground max-w-lg leading-relaxed">
@@ -70,17 +70,17 @@ export function HeroSection() {
               {/* Stats */}
               <div className="flex items-center gap-8 mt-12">
                 <div>
-                  <p className="font-heading font-bold text-3xl text-[#73442A]">500+</p>
+                  <p className="font-heading font-bold text-3xl text-brand-brown">500+</p>
                   <p className="text-sm text-muted-foreground">Produits</p>
                 </div>
                 <div className="w-px h-12 bg-border" />
                 <div>
-                  <p className="font-heading font-bold text-3xl text-[#73442A]">10K+</p>
+                  <p className="font-heading font-bold text-3xl text-brand-brown">10K+</p>
                   <p className="text-sm text-muted-foreground">Clients satisfaits</p>
                 </div>
                 <div className="w-px h-12 bg-border" />
                 <div>
-                  <p className="font-heading font-bold text-3xl text-[#73442A]">99%</p>
+                  <p className="font-heading font-bold text-3xl text-brand-brown">99%</p>
                   <p className="text-sm text-muted-foreground">Avis positifs</p>
                 </div>
               </div>
@@ -152,7 +152,7 @@ export function HeroSection() {
       </div>
 
       {/* Features bar */}
-      <div className="bg-[#73442A] text-white py-6">
+      <div className="bg-brand-brown text-white py-6">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {features.map((feature, index) => (
@@ -164,7 +164,7 @@ export function HeroSection() {
                 className="flex items-center gap-3"
               >
                 <div className="size-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-                  <feature.icon className="text-[#F07C1E]" data-icon />
+                  <feature.icon className="text-brand-orange" data-icon />
                 </div>
                 <div>
                   <p className="font-medium text-sm">{feature.title}</p>

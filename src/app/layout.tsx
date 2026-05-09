@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
+import { AnimatePresence } from "framer-motion";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -15,14 +16,14 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "FYLE MARKET | E-Commerce Premium",
+  title: "Eburnie | E-Commerce Premium",
   description:
-    "Découvrez FYLE MARKET, votre destination shopping en ligne pour des produits de qualité. Une expérience d'achat moderne, élégante et intuitive.",
-  keywords: ["e-commerce", "shopping", "boutique en ligne", "FYLE MARKET"],
+    "Découvrez Eburnie, votre destination shopping en ligne pour des produits de qualité. Une expérience d'achat moderne, élégante et intuitive.",
+  keywords: ["e-commerce", "shopping", "boutique en ligne", "Eburnie"],
 };
 
 export const viewport: Viewport = {
-  themeColor: "#F07C1E",
+  themeColor: "var(--color-brand-orange)",
   width: "device-width",
   initialScale: 1,
 };
@@ -38,7 +39,11 @@ export default function RootLayout({
       className={`${inter.variable} ${poppins.variable} h-full antialiased bg-background`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <Providers>{children}</Providers>
+        <Providers>
+          <AnimatePresence mode="wait">
+            {children}
+          </AnimatePresence>
+        </Providers>
       </body>
     </html>
   );

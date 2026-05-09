@@ -102,7 +102,7 @@ export function ProductDetailContent({
             {/* Badges */}
             <div className="absolute top-4 left-4 flex flex-col gap-2">
               {product.isNew && (
-                <Badge className="bg-[#73442A] text-white hover:bg-[#73442A]">
+                <Badge className="bg-brand-brown text-white hover:bg-brand-brown">
                   Nouveau
                 </Badge>
               )}
@@ -151,7 +151,7 @@ export function ProductDetailContent({
           </Link>
 
           {/* Title */}
-          <h1 className="font-heading font-bold text-2xl lg:text-3xl text-[#73442A] mt-2">
+          <h1 className="font-heading font-bold text-2xl lg:text-3xl text-brand-brown mt-2">
             {product.name}
           </h1>
 
@@ -287,7 +287,7 @@ export function ProductDetailContent({
             <p className="text-muted-foreground leading-relaxed">
               {product.description}
             </p>
-            <h3 className="font-heading font-semibold text-lg text-[#73442A] mt-6 mb-3">
+            <h3 className="font-heading font-semibold text-lg text-brand-brown mt-6 mb-3">
               Caractéristiques
             </h3>
             <ul className="space-y-2 text-muted-foreground">
@@ -336,7 +336,7 @@ export function ProductDetailContent({
       {/* Related Products */}
       {relatedProducts.length > 0 && (
         <section>
-          <h2 className="font-heading font-bold text-2xl lg:text-3xl text-[#73442A] mb-8">
+          <h2 className="font-heading font-bold text-2xl lg:text-3xl text-brand-brown mb-8">
             Produits similaires
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -41,7 +41,7 @@ export function TestimonialsSection() {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <h2 className="font-heading font-bold text-3xl lg:text-4xl text-[#73442A]">
+          <h2 className="font-heading font-bold text-3xl lg:text-4xl text-brand-brown">
             Ce que disent nos clients
           </h2>
           <p className="text-muted-foreground mt-3">

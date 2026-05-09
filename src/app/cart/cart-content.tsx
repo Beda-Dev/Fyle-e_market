@@ -38,7 +38,7 @@ export function CartContent() {
           <div className="size-32 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
             <ShoppingBag className="size-16 text-muted-foreground" />
           </div>
-          <h1 className="font-heading font-bold text-2xl text-[#73442A] mb-3">
+          <h1 className="font-heading font-bold text-2xl text-brand-brown mb-3">
             Votre panier est vide
           </h1>
           <p className="text-muted-foreground mb-8">
@@ -67,7 +67,7 @@ export function CartContent() {
         <span className="text-foreground">Panier</span>
       </nav>
 
-      <h1 className="font-heading font-bold text-3xl text-[#73442A] mb-8">
+      <h1 className="font-heading font-bold text-3xl text-brand-brown mb-8">
         Votre panier ({items.reduce((acc, item) => acc + item.quantity, 0)}{" "}
         articles)
       </h1>

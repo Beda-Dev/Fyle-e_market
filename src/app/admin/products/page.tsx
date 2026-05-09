@@ -47,7 +47,7 @@ export default function AdminProductsPage() {
               </div>
             </div>
             <Link href="/admin/products/new">
-              <Button className="bg-[#F07C1E] hover:bg-[#D96A0E] gap-2">
+              <Button className="bg-brand-orange hover:bg-brand-orange/90 gap-2">
                 <Plus className="size-4" />
                 Nouveau produit
               </Button>
@@ -117,7 +117,7 @@ export default function AdminProductsPage() {
                     </TableCell>
                     <TableCell>
                       {product.isFeatured && (
-                        <Badge className="bg-[#F07C1E]">En vedette</Badge>
+                        <Badge className="bg-brand-orange">En vedette</Badge>
                       )}
                       {product.isNew && (
                         <Badge variant="secondary" className="ml-2">
@@ -127,9 +127,11 @@ export default function AdminProductsPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1">
-                        <Button variant="ghost" size="icon">
-                          <Edit className="size-4" />
-                        </Button>
+                        <Link href={`/admin/products/${product.id}/edit`}>
+                          <Button variant="ghost" size="icon">
+                            <Edit className="size-4" />
+                          </Button>
+                        </Link>
                         <Button variant="ghost" size="icon" className="text-destructive">
                           <Trash2 className="size-4" />
                         </Button>

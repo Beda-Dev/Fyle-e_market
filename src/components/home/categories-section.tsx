@@ -18,7 +18,7 @@ export function CategoriesSection({ categories }: CategoriesSectionProps) {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
           <div>
-            <h2 className="font-heading font-bold text-3xl lg:text-4xl text-[#73442A]">
+            <h2 className="font-heading font-bold text-3xl lg:text-4xl text-brand-brown">
               Explorer par catégorie
             </h2>
             <p className="text-muted-foreground mt-2 max-w-lg">

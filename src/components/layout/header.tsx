@@ -78,7 +78,7 @@ export function Header() {
         }`}
       >
         {/* Top bar */}
-        {/* <div className="hidden lg:block bg-[#73442A] text-white py-2">
+        {/* <div className="hidden lg:block bg-brand-brown text-white py-2">
           <div className="container mx-auto px-4 flex items-center justify-between text-sm">
             <p>Livraison gratuite pour les commandes de plus de 50 000 FCFA</p>
             <div className="flex items-center gap-6">
@@ -106,7 +106,7 @@ export function Header() {
                   priority
                 />
               </div>
-              <span className="font-heading font-bold text-lg lg:text-xl text-[#73442A]">
+              <span className="font-heading font-bold text-lg lg:text-xl text-brand-brown">
                 Eburnie
               </span>
             </Link>
@@ -237,6 +237,13 @@ export function Header() {
                               {isAdmin ? "Administrateur" : "Client"}
                             </p>
                           </div>
+                          <Link
+                            href="/profile"
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-secondary text-sm"
+                          >
+                            <User className="size-4" />
+                            Mon profil
+                          </Link>
                           {isAdmin && (
                             <Link
                               href="/admin"

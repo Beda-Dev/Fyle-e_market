@@ -17,7 +17,7 @@ export function PromoBannerSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="relative overflow-hidden rounded-2xl lg:rounded-3xl bg-[#73442A] min-h-[350px] lg:min-h-[450px]"
+            className="relative overflow-hidden rounded-2xl lg:rounded-3xl bg-brand-brown min-h-[350px] lg:min-h-[450px]"
           >
             <Image
               src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800"
@@ -25,9 +25,9 @@ export function PromoBannerSection() {
               fill
               className="object-cover opacity-40"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#73442A] via-[#73442A]/80 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-brand-brown via-brand-brown/80 to-transparent" />
             <div className="relative z-10 p-8 lg:p-12 flex flex-col justify-center h-full max-w-md">
-              <span className="inline-block px-3 py-1 rounded-full bg-[#F07C1E] text-white text-xs font-medium w-fit mb-4">
+              <span className="inline-block px-3 py-1 rounded-full bg-brand-orange text-white text-xs font-medium w-fit mb-4">
                 Offre Limitée
               </span>
               <h3 className="font-heading font-bold text-3xl lg:text-4xl text-white mb-4 text-balance">
@@ -62,10 +62,10 @@ export function PromoBannerSection() {
               />
               <div className="absolute inset-0 bg-gradient-to-r from-[#F9DEC9] to-transparent" />
               <div className="relative z-10 p-6 lg:p-8 flex flex-col justify-center h-full">
-                <h4 className="font-heading font-bold text-2xl text-[#73442A] mb-2">
+                <h4 className="font-heading font-bold text-2xl text-brand-brown mb-2">
                   Mode Tendance
                 </h4>
-                <p className="text-[#73442A]/70 text-sm mb-4">
+                <p className="text-brand-brown/70 text-sm mb-4">
                   Les dernières tendances de la saison
                 </p>
                 <Link
@@ -93,10 +93,10 @@ export function PromoBannerSection() {
               />
               <div className="absolute inset-0 bg-gradient-to-r from-[#E8B287]/80 to-transparent" />
               <div className="relative z-10 p-6 lg:p-8 flex flex-col justify-center h-full">
-                <h4 className="font-heading font-bold text-2xl text-[#73442A] mb-2">
+                <h4 className="font-heading font-bold text-2xl text-brand-brown mb-2">
                   Maison & Déco
                 </h4>
-                <p className="text-[#73442A]/70 text-sm mb-4">
+                <p className="text-brand-brown/70 text-sm mb-4">
                   Sublimez votre intérieur
                 </p>
                 <Link

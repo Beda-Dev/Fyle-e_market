@@ -18,10 +18,10 @@ export function NewArrivalsSection({ products }: NewArrivalsSectionProps) {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
           <div>
-            <span className="inline-block px-3 py-1 rounded-full bg-[#73442A] text-white text-xs font-medium mb-4">
+            <span className="inline-block px-3 py-1 rounded-full bg-brand-brown text-white text-xs font-medium mb-4">
               Nouvelles Arrivées
             </span>
-            <h2 className="font-heading font-bold text-3xl lg:text-4xl text-[#73442A]">
+            <h2 className="font-heading font-bold text-3xl lg:text-4xl text-brand-brown">
               Nos dernières nouveautés
             </h2>
             <p className="text-muted-foreground mt-2 max-w-lg">

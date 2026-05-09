@@ -30,7 +30,7 @@ const footerLinks = {
 
 export function Footer() {
   return (
-    <footer className="bg-[#73442A] text-white mt-auto">
+    <footer className="bg-brand-brown text-white mt-auto">
       {/* Newsletter section */}
       <div className="bg-[#5D3622]">
         <div className="container mx-auto px-4 py-10">
@@ -47,9 +47,9 @@ export function Footer() {
               <Input
                 type="email"
                 placeholder="Votre adresse email"
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-[#F07C1E]"
+                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-brand-orange"
               />
-              <Button className="bg-[#F07C1E] hover:bg-[#D96A0E] text-white flex-shrink-0">
+              <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white flex-shrink-0">
                 {"S'inscrire"}
               </Button>
             </form>
@@ -177,7 +177,7 @@ export function Footer() {
           <div className="flex items-center gap-3">
             <a
               href="#"
-              className="size-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#F07C1E] transition-colors"
+              className="size-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-orange transition-colors"
               aria-label="Site web"
             >
               <Globe className="size-4" />

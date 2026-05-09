@@ -58,12 +58,40 @@ export function CheckoutContent() {
 
   const handleSubmitOrder = async () => {
     setIsSubmitting(true);
-    // TODO: Submit order to backend
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setCurrentStep("confirmation");
-    clearCart();
-    setIsSubmitting(false);
+    try {
+      const orderData = {
+        phone: formData.phone,
+        addressLine: formData.address,
+        city: formData.city,
+        note: formData.note,
+        items: items.map((item) => ({
+          productId: item.product.id,
+          quantity: item.quantity,
+        })),
+      };
+
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!res.ok) {
+        const json = await res.json();
+        throw new Error(json.error || "Erreur lors de la commande");
+      }
+
+      const json = await res.json();
+      const orderId = json.data.id;
+
+      clearCart();
+      router.push(`/order-confirmation/${orderId}`);
+    } catch (error) {
+      console.error("Order error:", error);
+      alert(error instanceof Error ? error.message : "Erreur lors de la commande");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (items.length === 0 && currentStep !== "confirmation") {
@@ -73,7 +101,7 @@ export function CheckoutContent() {
           <div className="size-32 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
             <ShoppingBag className="size-16 text-muted-foreground" />
           </div>
-          <h1 className="font-heading font-bold text-2xl text-[#73442A] mb-3">
+          <h1 className="font-heading font-bold text-2xl text-brand-brown mb-3">
             Votre panier est vide
           </h1>
           <p className="text-muted-foreground mb-8">
