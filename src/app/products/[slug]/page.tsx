@@ -1,33 +1,57 @@
 import { Header, Footer } from "@/components/layout";
 import { ProductDetailContent } from "./product-detail-content";
-import { products, getProductBySlug } from "@/lib/mock-data";
+import { prisma } from "@/lib/prisma";
+import { serializeProduct } from "@/lib/serializers";
 import { notFound } from "next/navigation";
+import type { Product } from "@/lib/mock-data";
 
 interface ProductPageProps {
-  params: Promise<{
-    slug: string;
-  }>;
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  return products.map((product) => ({
-    slug: product.slug,
-  }));
+  const products = await prisma.product.findMany({
+    where: { isActive: true },
+    select: { slug: true },
+  });
+  return products.map((p) => ({ slug: p.slug }));
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
-  const product = getProductBySlug(slug);
 
-  if (!product) {
+  const product = await prisma.product.findUnique({
+    where: { slug },
+    include: { category: { select: { id: true, name: true, slug: true } } },
+  });
+
+  if (!product || !product.isActive) {
     notFound();
   }
+
+  const related = await prisma.product.findMany({
+    where: {
+      categoryId: product.categoryId,
+      id: { not: product.id },
+      isActive: true,
+    },
+    include: { category: { select: { id: true, name: true, slug: true } } },
+    take: 4,
+  });
+
+  const serialize = (p: typeof product): Product => ({
+    ...serializeProduct(p),
+    images: (p.images as string[] | null) ?? [],
+  } as Product);
 
   return (
     <>
       <Header />
       <main className="flex-1">
-        <ProductDetailContent product={product} />
+        <ProductDetailContent
+          product={serialize(product)}
+          relatedProducts={related.map(serialize)}
+        />
       </main>
       <Footer />
     </>

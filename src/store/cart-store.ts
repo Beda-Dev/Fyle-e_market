@@ -87,7 +87,7 @@ export const useCartStore = create<CartState>()(
       },
     }),
     {
-      name: "fyle-market-cart",
+      name: "eburnie-cart",
       // Only persist items, not the open state
       partialize: (state) => ({ items: state.items }),
     }

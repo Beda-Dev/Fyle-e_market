@@ -5,9 +5,13 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { categories } from "@/lib/mock-data";
+import type { Category } from "@/lib/mock-data";
 
-export function CategoriesSection() {
+interface CategoriesSectionProps {
+  categories: Category[];
+}
+
+export function CategoriesSection({ categories }: CategoriesSectionProps) {
   return (
     <section className="py-16 lg:py-24">
       <div className="container mx-auto px-4">
@@ -44,21 +48,27 @@ export function CategoriesSection() {
                 <Card className="group relative overflow-hidden border-0 bg-muted/30 hover:shadow-lg transition-all duration-300">
                   <CardContent className="p-0">
                     <div className="relative aspect-square">
-                      <Image
-                        src={category.image}
-                        alt={category.name}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-110"
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                      />
+                      {category.image ? (
+                        <Image
+                          src={category.image}
+                          alt={category.name}
+                          fill
+                          className="object-cover transition-transform duration-500 group-hover:scale-110"
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-muted" />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                       <div className="absolute bottom-0 left-0 right-0 p-4">
                         <h3 className="font-heading font-semibold text-white text-sm lg:text-base">
                           {category.name}
                         </h3>
-                        <p className="text-white/70 text-xs mt-1">
-                          {category.productCount} produits
-                        </p>
+                        {typeof category.productCount === "number" && (
+                          <p className="text-white/70 text-xs mt-1">
+                            {category.productCount} produits
+                          </p>
+                        )}
                       </div>
                     </div>
                   </CardContent>

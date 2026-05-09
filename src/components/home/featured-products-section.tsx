@@ -3,10 +3,14 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ProductCard } from "@/components/products/product-card";
-import { getFeaturedProducts } from "@/lib/mock-data";
+import type { Product } from "@/lib/mock-data";
 
-export function FeaturedProductsSection() {
-  const featuredProducts = getFeaturedProducts();
+interface FeaturedProductsSectionProps {
+  products: Product[];
+}
+
+export function FeaturedProductsSection({ products }: FeaturedProductsSectionProps) {
+  const featuredProducts = products;
 
   return (
     <section className="py-16 lg:py-24 bg-muted/30">

@@ -1,4 +1,4 @@
-# Charte Graphique — FYLE MARKET
+# Charte Graphique — Eburnie
 
 ## 1. Identité Visuelle
 

@@ -26,42 +26,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { mockProducts, mockOrders, formatPrice } from "@/lib/mock-data";
+import { useEffect, useState } from "react";
+import { formatPrice, type Product, type Order } from "@/lib/mock-data";
 
-const stats = [
-  {
-    title: "Ventes totales",
-    value: "2,450,000 FCFA",
-    change: "+12.5%",
-    icon: TrendingUp,
-    color: "text-green-600",
-    bgColor: "bg-green-50",
-  },
-  {
-    title: "Commandes",
-    value: "156",
-    change: "+8.2%",
-    icon: ShoppingCart,
-    color: "text-blue-600",
-    bgColor: "bg-blue-50",
-  },
-  {
-    title: "Produits",
-    value: mockProducts.length.toString(),
-    change: "+3",
-    icon: Package,
-    color: "text-[#F07C1E]",
-    bgColor: "bg-orange-50",
-  },
-  {
-    title: "Clients",
-    value: "89",
-    change: "+5.1%",
-    icon: Users,
-    color: "text-purple-600",
-    bgColor: "bg-purple-50",
-  },
-];
+type AdminOrder = Order & {
+  user?: { firstName: string; lastName: string; email: string };
+};
+
+// stats deplace dans le composant pour utiliser les vraies donnees
 
 const getStatusBadge = (status: string) => {
   const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "outline"; icon: typeof CheckCircle }> = {
@@ -83,8 +55,60 @@ const getStatusBadge = (status: string) => {
 };
 
 export function AdminDashboard() {
-  const recentOrders = mockOrders.slice(0, 5);
-  const lowStockProducts = mockProducts.filter(p => p.stock < 10).slice(0, 5);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/admin/products").then((r) => r.json()),
+      fetch("/api/admin/orders").then((r) => r.json()),
+    ]).then(([p, o]) => {
+      setProducts(p.data ?? []);
+      setOrders(o.data ?? []);
+    });
+  }, []);
+
+  const recentOrders = orders.slice(0, 5);
+  const lowStockProducts = products.filter((p) => p.stock < 10).slice(0, 5);
+
+  const totalRevenue = orders
+    .filter((o) => o.status === "DELIVERED")
+    .reduce((sum, o) => sum + o.totalAmount, 0);
+
+  const stats = [
+    {
+      title: "Ventes totales",
+      value: formatPrice(totalRevenue),
+      change: "",
+      icon: TrendingUp,
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+    },
+    {
+      title: "Commandes",
+      value: orders.length.toString(),
+      change: "",
+      icon: ShoppingCart,
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+    },
+    {
+      title: "Produits",
+      value: products.length.toString(),
+      change: "",
+      icon: Package,
+      color: "text-[#F07C1E]",
+      bgColor: "bg-orange-50",
+    },
+    {
+      title: "Clients",
+      value: new Set(orders.map((o) => (o as { userId?: string }).userId)).size.toString(),
+      change: "",
+      icon: Users,
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -96,14 +120,14 @@ export function AdminDashboard() {
               <Link href="/" className="flex items-center gap-2">
                 <div className="relative size-10 bg-[#73442A] rounded-lg p-1">
                   <Image
-                    src="/logo fyle market.png"
-                    alt="FYLE MARKET"
+                    src="/logo eburnie.png"
+                    alt="Eburnie"
                     fill
                     className="object-contain"
                   />
                 </div>
                 <div>
-                  <span className="font-heading font-bold text-lg text-[#73442A]">FYLE MARKET</span>
+                  <span className="font-heading font-bold text-lg text-[#73442A]">Eburnie</span>
                   <Badge variant="secondary" className="ml-2 text-xs">Admin</Badge>
                 </div>
               </Link>
@@ -179,10 +203,18 @@ export function AdminDashboard() {
                 <TableBody>
                   {recentOrders.map((order) => (
                     <TableRow key={order.id}>
-                      <TableCell className="font-medium">#{order.id.slice(-6)}</TableCell>
-                      <TableCell>{order.customerName}</TableCell>
+                      <TableCell className="font-medium">
+                        #{order.id.slice(-6).toUpperCase()}
+                      </TableCell>
+                      <TableCell>
+                        {order.user
+                          ? `${order.user.firstName} ${order.user.lastName}`
+                          : "—"}
+                      </TableCell>
                       <TableCell>{getStatusBadge(order.status)}</TableCell>
-                      <TableCell className="text-right">{formatPrice(order.total)}</TableCell>
+                      <TableCell className="text-right">
+                        {formatPrice(order.totalAmount)}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -210,7 +242,7 @@ export function AdminDashboard() {
                     <div key={product.id} className="flex items-center gap-3 p-2 rounded-lg bg-muted/50">
                       <div className="relative size-12 rounded-md overflow-hidden bg-muted">
                         <Image
-                          src={product.images[0]}
+                          src={product.imageUrl}
                           alt={product.name}
                           fill
                           className="object-cover"

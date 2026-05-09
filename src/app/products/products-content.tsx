@@ -32,14 +32,12 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ProductCard } from "@/components/products/product-card";
-import { products, categories } from "@/lib/mock-data";
+import type { Category, Product } from "@/lib/mock-data";
 
 const sortOptions = [
   { value: "newest", label: "Plus récents" },
-  { value: "popular", label: "Plus populaires" },
   { value: "price-asc", label: "Prix croissant" },
   { value: "price-desc", label: "Prix décroissant" },
-  { value: "rating", label: "Mieux notés" },
 ];
 
 const priceRanges = [
@@ -49,7 +47,12 @@ const priceRanges = [
   { id: "100000+", label: "Plus de 100 000 FCFA", min: 100000, max: Infinity },
 ];
 
-export function ProductsContent() {
+interface ProductsContentProps {
+  products: Product[];
+  categories: Category[];
+}
+
+export function ProductsContent({ products, categories }: ProductsContentProps) {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "";
 
@@ -96,22 +99,16 @@ export function ProductsContent() {
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
         break;
-      case "popular":
-        result.sort((a, b) => b.reviewCount - a.reviewCount);
-        break;
       case "price-asc":
         result.sort((a, b) => a.price - b.price);
         break;
       case "price-desc":
         result.sort((a, b) => b.price - a.price);
         break;
-      case "rating":
-        result.sort((a, b) => b.rating - a.rating);
-        break;
     }
 
     return result;
-  }, [searchQuery, selectedCategory, selectedPriceRange, sortBy]);
+  }, [products, searchQuery, selectedCategory, selectedPriceRange, sortBy]);
 
   const activeFiltersCount = [selectedCategory, selectedPriceRange].filter(
     Boolean

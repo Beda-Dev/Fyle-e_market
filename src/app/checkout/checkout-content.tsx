@@ -160,7 +160,7 @@ export function CheckoutContent() {
             sous peu.
           </p>
           <p className="text-sm text-muted-foreground mb-8">
-            Numéro de commande : <span className="font-mono font-medium">#FM2024001</span>
+            Numéro de commande : <span className="font-mono font-medium">#EB2024001</span>
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button asChild>

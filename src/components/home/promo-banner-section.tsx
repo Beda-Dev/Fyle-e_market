@@ -36,7 +36,7 @@ export function PromoBannerSection() {
               <p className="text-white/80 mb-6">
                 Profitez de nos meilleures offres sur les gadgets et accessoires high-tech.
               </p>
-              <Button asChild variant="secondary" className="w-fit">
+              <Button  variant="secondary" className="w-fit">
                 <Link href="/products?category=electronique&sale=true">
                   Découvrir
                   <ArrowRight data-icon="inline-end" />

@@ -3,10 +3,14 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { ProductCard } from "@/components/products/product-card";
-import { getNewProducts } from "@/lib/mock-data";
+import type { Product } from "@/lib/mock-data";
 
-export function NewArrivalsSection() {
-  const newProducts = getNewProducts();
+interface NewArrivalsSectionProps {
+  products: Product[];
+}
+
+export function NewArrivalsSection({ products }: NewArrivalsSectionProps) {
+  const newProducts = products;
 
   return (
     <section className="py-16 lg:py-24">

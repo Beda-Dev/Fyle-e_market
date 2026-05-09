@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ShoppingCart, Heart, Star, Eye } from "lucide-react";
+import { ShoppingCart, Heart, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -108,25 +108,6 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               {product.name}
             </Link>
           </h3>
-
-          {/* Rating */}
-          <div className="flex items-center gap-1 mt-2">
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`size-3.5 ${
-                    i < Math.floor(product.rating)
-                      ? "fill-amber-400 text-amber-400"
-                      : "fill-muted text-muted"
-                  }`}
-                />
-              ))}
-            </div>
-            <span className="text-xs text-muted-foreground">
-              ({product.reviewCount})
-            </span>
-          </div>
 
           {/* Price */}
           <div className="flex items-baseline gap-2 mt-3">

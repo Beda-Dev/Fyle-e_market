@@ -1,0 +1,153 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+datasource db {
+  provider = "mysql"
+  // Railway supporte les vraies foreign keys — pas besoin de relationMode
+}
+
+// ─── Rôles utilisateur ───────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  CLIENT
+}
+
+// ─── Statuts d'une commande ──────────────────────────────────────────────────
+
+enum OrderStatus {
+  PENDING      // En attente (commande passée, pas encore traitée)
+  CONFIRMED    // Confirmée par l'admin
+  SHIPPED      // Expédiée
+  DELIVERED    // Livrée (paiement en espèces effectué)
+  CANCELLED    // Annulée
+}
+
+// ─── Utilisateur ─────────────────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // hashé avec bcrypt
+  firstName String
+  lastName  String
+  phone     String?
+  role      Role     @default(CLIENT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders    Order[]
+
+  @@index([email])
+}
+
+// ─── Catégorie produit ────────────────────────────────────────────────────────
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  description String?   @db.Text
+  image       String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+
+  @@index([slug])
+}
+
+// ─── Produit ──────────────────────────────────────────────────────────────────
+
+model Product {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  description   String   @db.Text
+  price         Decimal  @db.Decimal(10, 2)
+  originalPrice Decimal  @db.Decimal(10, 2)
+  stock         Int      @default(0)
+  imageUrl      String
+  imagePublicId String
+  images        Json?
+  isActive      Boolean  @default(true)
+  isFeatured    Boolean  @default(false)
+  isNew         Boolean  @default(false)
+
+  categoryId    String
+  category      Category @relation(fields: [categoryId], references: [id])
+
+  orderItems    OrderItem[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([categoryId])
+  @@index([slug])
+  @@index([isActive])
+  @@index([isFeatured])
+  @@index([isNew])
+}
+
+// ─── Commande ─────────────────────────────────────────────────────────────────
+
+model Order {
+  id          String      @id @default(cuid())
+  status      OrderStatus @default(PENDING)
+  totalAmount Decimal     @db.Decimal(10, 2) // snapshot du total au moment de la commande
+
+  // Adresse de livraison (snapshot — indépendante du profil utilisateur)
+  addressLine String?
+  city        String?
+  phone       String
+  longitude   Float?
+  latitude    Float?
+
+  // Note optionnelle du client
+  note        String?     @db.Text
+
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+
+  items       OrderItem[]
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// ─── Ligne de commande ────────────────────────────────────────────────────────
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  quantity  Int
+  unitPrice Decimal @db.Decimal(10, 2) // snapshot du prix au moment de la commande
+
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  customerService   String
+  email     String?
+  whatsapp  String?
+  slogan    String   @db.Text
+  location  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

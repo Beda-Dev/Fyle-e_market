@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p \"src/app/api/auth/[...nextauth]\")",
+      "Bash(mv \"src/app/api/api/auth/[...nextauth]/route.ts\" \"src/app/api/auth/[...nextauth]/route.ts\")"
+    ]
+  }
+}

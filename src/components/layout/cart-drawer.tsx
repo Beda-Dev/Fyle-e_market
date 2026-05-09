@@ -51,7 +51,7 @@ export function CartDrawer() {
             <p className="text-muted-foreground text-sm mb-6">
               Découvrez nos produits et ajoutez vos favoris au panier
             </p>
-            <Button onClick={closeCart} asChild>
+            <Button onClick={closeCart}>
               <Link href="/products">
                 Commencer vos achats
               </Link>
@@ -173,12 +173,12 @@ export function CartDrawer() {
                 </span>
               </div>
               <div className="flex flex-col gap-2">
-                <Button size="lg" asChild onClick={closeCart}>
+                <Button size="lg"  onClick={closeCart}>
                   <Link href="/checkout">
                     Passer la commande
                   </Link>
                 </Button>
-                <Button variant="outline" size="lg" asChild onClick={closeCart}>
+                <Button variant="outline" size="lg" onClick={closeCart}>
                   <Link href="/cart">
                     Voir le panier
                   </Link>

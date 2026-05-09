@@ -65,35 +65,35 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-2 mb-4">
               <div className="relative size-10 bg-white rounded-lg p-1">
                 <Image
-                  src="/logo fyle market.png"
-                  alt="FYLE MARKET"
+                  src="/logo eburnie.png"
+                  alt="Eburnie"
                   fill
                   className="object-contain"
                 />
               </div>
-              <span className="font-heading font-bold text-lg">FYLE MARKET</span>
+              <span className="font-heading font-bold text-lg">Eburnie</span>
             </Link>
             <p className="text-white/70 text-sm mb-4">
               Votre destination shopping en ligne pour des produits de qualité.
             </p>
             <div className="flex flex-col gap-2 text-sm">
               <a
-                href="tel:+221000000000"
+                href="tel:+225000000000"
                 className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
               >
                 <Phone className="size-4" />
-                +221 00 000 00 00
+                +225 00 00 00 00 00
               </a>
               <a
-                href="mailto:contact@fylemarket.com"
+                href="mailto:contact@eburnie.com"
                 className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
               >
                 <Mail className="size-4" />
-                contact@fylemarket.com
+                contact@eburnie.com
               </a>
               <span className="flex items-center gap-2 text-white/70">
                 <MapPin className="size-4" />
-                Dakar, Sénégal
+                Abidjan, Côte d'Ivoire
               </span>
             </div>
           </div>
@@ -172,7 +172,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-white/60 text-center md:text-left">
-            © {new Date().getFullYear()} FYLE MARKET. Tous droits réservés.
+            © {new Date().getFullYear()} Eburnie. Tous droits réservés.
           </p>
           <div className="flex items-center gap-3">
             <a

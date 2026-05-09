@@ -7,11 +7,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ShoppingCart,
   Menu,
-  X,
   Search,
   User,
   Heart,
   ChevronDown,
+  LogOut,
+  ShieldCheck,
+  Package,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,8 +26,9 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useCartStore } from "@/store/cart-store";
-import { categories } from "@/lib/mock-data";
+import type { Category } from "@/lib/mock-data";
 import { CartDrawer } from "./cart-drawer";
+import { useSession, signOut } from "next-auth/react";
 
 const navLinks = [
   { href: "/", label: "Accueil" },
@@ -39,8 +42,12 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
   const { items, openCart } = useCartStore();
   const [mounted, setMounted] = useState(false);
+  const { data: session, status } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
 
   useEffect(() => {
     setMounted(true);
@@ -50,6 +57,13 @@ export function Header() {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/categories")
+      .then((r) => r.json())
+      .then((j) => setCategories(j.data ?? []))
+      .catch(() => setCategories([]));
   }, []);
 
   const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
@@ -85,15 +99,15 @@ export function Header() {
             <Link href="/" className="flex items-center gap-2">
               <div className="relative w-10 h-10 lg:w-12 lg:h-12">
                 <Image
-                  src="/logo fyle market.png"
-                  alt="FYLE MARKET"
+                  src="/logo eburnie.png"
+                  alt="Eburnie"
                   fill
                   className="object-contain"
                   priority
                 />
               </div>
               <span className="font-heading font-bold text-lg lg:text-xl text-[#73442A]">
-                FYLE MARKET
+                Eburnie
               </span>
             </Link>
 
@@ -141,9 +155,11 @@ export function Header() {
                                 <span className="text-sm font-medium">
                                   {category.name}
                                 </span>
-                                <Badge variant="secondary" className="ml-auto text-xs">
-                                  {category.productCount}
-                                </Badge>
+                                {typeof category.productCount === "number" && (
+                                  <Badge variant="secondary" className="ml-auto text-xs">
+                                    {category.productCount}
+                                  </Badge>
+                                )}
                               </Link>
                             ))}
                           </div>
@@ -190,14 +206,74 @@ export function Header() {
               </Button>
 
               {/* Account */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hidden sm:flex"
-                aria-label="Mon compte"
-              >
-                <User data-icon />
-              </Button>
+              {status === "authenticated" ? (
+                <div
+                  className="relative hidden sm:block"
+                  onMouseEnter={() => setIsAccountOpen(true)}
+                  onMouseLeave={() => setIsAccountOpen(false)}
+                >
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Mon compte"
+                  >
+                    <User data-icon />
+                  </Button>
+                  <AnimatePresence>
+                    {isAccountOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 top-full pt-2 w-56"
+                      >
+                        <div className="bg-card rounded-xl shadow-lg border p-2">
+                          <div className="px-3 py-2 border-b mb-1">
+                            <p className="text-sm font-medium truncate">
+                              {session?.user?.name || session?.user?.email}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {isAdmin ? "Administrateur" : "Client"}
+                            </p>
+                          </div>
+                          {isAdmin && (
+                            <Link
+                              href="/admin"
+                              className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-secondary text-sm"
+                            >
+                              <ShieldCheck className="size-4" />
+                              Tableau de bord
+                            </Link>
+                          )}
+                          <Link
+                            href="/orders"
+                            className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-secondary text-sm"
+                          >
+                            <Package className="size-4" />
+                            Mes commandes
+                          </Link>
+                          <button
+                            onClick={() => signOut({ callbackUrl: "/" })}
+                            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-secondary text-sm text-destructive"
+                          >
+                            <LogOut className="size-4" />
+                            Se deconnecter
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  className="hidden sm:inline-flex items-center gap-2 px-3 py-2 text-sm font-medium hover:text-primary"
+                >
+                  <User data-icon />
+                  Connexion
+                </Link>
+              )}
 
               {/* Cart */}
               <Button
@@ -217,8 +293,9 @@ export function Header() {
 
               {/* Mobile Menu Button */}
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-                <SheetTrigger >
-                  <Button
+                <SheetTrigger 
+                  render={
+                                     <Button
                     variant="ghost"
                     size="icon"
                     className="lg:hidden"
@@ -226,7 +303,9 @@ export function Header() {
                   >
                     <Menu data-icon />
                   </Button>
-                </SheetTrigger>
+                  }
+ 
+                />
                 <SheetContent side="right" className="w-[300px] sm:w-[350px]">
                   <SheetHeader>
                     <SheetTitle className="text-left font-heading">Menu</SheetTitle>
@@ -243,10 +322,10 @@ export function Header() {
                       </Link>
                     ))}
                     <div className="pt-4 flex flex-col gap-3">
-                      <Button variant="outline" className="w-full justify-start gap-2">
+                      {<Button variant="outline" className="w-full justify-start gap-2">
                         <User data-icon="inline-start" />
                         Mon compte
-                      </Button>
+                      </Button>}
                       <Button variant="outline" className="w-full justify-start gap-2">
                         <Heart data-icon="inline-start" />
                         Liste de souhaits

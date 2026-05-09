@@ -11,7 +11,6 @@ import {
   Truck,
   Shield,
   RotateCcw,
-  Star,
   Plus,
   Minus,
   Check,
@@ -25,32 +24,29 @@ import { useCartStore } from "@/store/cart-store";
 import {
   formatPrice,
   getDiscountPercentage,
-  products,
   type Product,
 } from "@/lib/mock-data";
 
 interface ProductDetailContentProps {
   product: Product;
+  relatedProducts: Product[];
 }
 
-export function ProductDetailContent({ product }: ProductDetailContentProps) {
+export function ProductDetailContent({
+  product,
+  relatedProducts,
+}: ProductDetailContentProps) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCartStore();
+
+  // image principale + galerie
+  const gallery = [product.imageUrl, ...(product.images ?? [])].filter(Boolean);
 
   const discountPercentage = getDiscountPercentage(
     product.price,
     product.originalPrice
   );
-
-  const relatedProducts = products
-    .filter(
-      (p) =>
-        p.category.slug === product.category.slug &&
-        p.id !== product.id &&
-        p.isActive
-    )
-    .slice(0, 4);
 
   const handleAddToCart = () => {
     addItem(product, quantity);
@@ -96,7 +92,7 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
             className="relative aspect-square rounded-2xl overflow-hidden bg-muted"
           >
             <Image
-              src={product.images[selectedImage]}
+              src={gallery[selectedImage] ?? product.imageUrl}
               alt={product.name}
               fill
               className="object-cover"
@@ -119,9 +115,9 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
           </motion.div>
 
           {/* Thumbnails */}
-          {product.images.length > 1 && (
+          {gallery.length > 1 && (
             <div className="flex gap-3 overflow-x-auto pb-2">
-              {product.images.map((image, index) => (
+              {gallery.map((image, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedImage(index)}
@@ -158,26 +154,6 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
           <h1 className="font-heading font-bold text-2xl lg:text-3xl text-[#73442A] mt-2">
             {product.name}
           </h1>
-
-          {/* Rating */}
-          <div className="flex items-center gap-2 mt-4">
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`size-5 ${
-                    i < Math.floor(product.rating)
-                      ? "fill-amber-400 text-amber-400"
-                      : "fill-muted text-muted"
-                  }`}
-                />
-              ))}
-            </div>
-            <span className="text-sm font-medium">{product.rating}</span>
-            <span className="text-sm text-muted-foreground">
-              ({product.reviewCount} avis)
-            </span>
-          </div>
 
           {/* Price */}
           <div className="flex items-baseline gap-3 mt-6">
@@ -300,12 +276,6 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
             Description
           </TabsTrigger>
           <TabsTrigger
-            value="reviews"
-            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3"
-          >
-            Avis ({product.reviewCount})
-          </TabsTrigger>
-          <TabsTrigger
             value="shipping"
             className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3"
           >
@@ -326,14 +296,6 @@ export function ProductDetailContent({ product }: ProductDetailContentProps) {
               <li>Confort optimal</li>
               <li>Durabilité garantie</li>
             </ul>
-          </div>
-        </TabsContent>
-        <TabsContent value="reviews" className="pt-6">
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">
-              Les avis clients seront affichés ici.
-            </p>
-            {/* TODO: Implement reviews section */}
           </div>
         </TabsContent>
         <TabsContent value="shipping" className="pt-6">

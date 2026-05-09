@@ -13,7 +13,7 @@ const testimonials = [
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
     rating: 5,
     content:
-      "Service impeccable ! Les produits sont de très bonne qualité et la livraison est rapide. Je recommande vivement FYLE MARKET.",
+      "Service impeccable ! Les produits sont de très bonne qualité et la livraison est rapide. Je recommande vivement Eburnie.",
   },
   {
     id: 2,
