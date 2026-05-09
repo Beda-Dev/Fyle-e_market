@@ -167,12 +167,12 @@ export function CartContent() {
             </CardContent>
           </Card>
 
-          <Button variant="outline" asChild className="mt-4">
-            <Link href="/products">
+          <Link href="/products">
+            <Button variant="outline" className="mt-4">
               <ArrowRight className="rotate-180" data-icon="inline-start" />
               Continuer mes achats
-            </Link>
-          </Button>
+            </Button>
+          </Link>
         </div>
 
         {/* Order Summary */}
@@ -233,12 +233,12 @@ export function CartContent() {
                 <span className="text-primary">{formatPrice(finalTotal)}</span>
               </div>
 
-              <Button size="lg" asChild className="w-full mt-2">
-                <Link href="/checkout">
+              <Link href="/checkout">
+                <Button size="lg" className="w-full mt-2">
                   Passer la commande
                   <ArrowRight data-icon="inline-end" />
-                </Link>
-              </Button>
+                </Button>
+              </Link>
 
               {/* Trust badges */}
               <div className="flex items-center justify-center gap-4 pt-4 text-xs text-muted-foreground">

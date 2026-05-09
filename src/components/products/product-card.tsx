@@ -65,16 +65,15 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             >
               <Heart data-icon />
             </Button>
-            <Button
-              size="icon"
-              variant="secondary"
-              className="size-9 rounded-full bg-white shadow-md hover:bg-primary hover:text-white"
-              asChild
-            >
-              <Link href={`/products/${product.slug}`} aria-label="Voir le produit">
+            <Link href={`/products/${product.slug}`} aria-label="Voir le produit">
+              <Button
+                size="icon"
+                variant="secondary"
+                className="size-9 rounded-full bg-white shadow-md hover:bg-primary hover:text-white"
+              >
                 <Eye data-icon />
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
 
           {/* Add to cart overlay */}

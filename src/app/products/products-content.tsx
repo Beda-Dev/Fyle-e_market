@@ -226,7 +226,7 @@ export function ProductsContent({ products, categories }: ProductsContentProps) 
         <div className="flex items-center gap-3 flex-wrap">
           {/* Mobile Filters */}
           <Sheet open={isFiltersOpen} onOpenChange={setIsFiltersOpen}>
-            <SheetTrigger asChild>
+            <SheetTrigger>
               <Button variant="outline" className="lg:hidden gap-2">
                 <SlidersHorizontal data-icon="inline-start" />
                 Filtres
@@ -246,7 +246,7 @@ export function ProductsContent({ products, categories }: ProductsContentProps) 
           </Sheet>
 
           {/* Sort */}
-          <Select value={sortBy} onValueChange={setSortBy}>
+          <Select value={sortBy} onValueChange={(value) => value && setSortBy(value)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Trier par" />
             </SelectTrigger>

@@ -79,12 +79,11 @@ export function CheckoutContent() {
           <p className="text-muted-foreground mb-8">
             Ajoutez des produits à votre panier avant de passer commande.
           </p>
-          <Button size="lg" asChild>
-            <Link href="/products">
+          <Link href="/products">
+            <Button size="lg">
               Voir les produits
-              <ArrowRight data-icon="inline-end" />
-            </Link>
-          </Button>
+            </Button>
+          </Link>
         </div>
       </div>
     );
@@ -163,16 +162,16 @@ export function CheckoutContent() {
             Numéro de commande : <span className="font-mono font-medium">#EB2024001</span>
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button asChild>
-              <Link href="/products">
+            <Link href="/products">
+              <Button>
                 Continuer mes achats
-              </Link>
-            </Button>
-            <Button variant="outline" asChild>
-              <Link href="/orders">
+              </Button>
+            </Link>
+            <Link href="/orders">
+              <Button variant="outline">
                 Suivre ma commande
-              </Link>
-            </Button>
+              </Button>
+            </Link>
           </div>
         </motion.div>
       )}
