@@ -45,12 +45,12 @@ export function CartContent() {
             Découvrez nos produits et ajoutez vos favoris au panier pour
             commencer vos achats.
           </p>
-          <Button size="lg" asChild>
-            <Link href="/products">
+          <Link href="/products">
+            <Button size="lg">
               Commencer vos achats
               <ArrowRight data-icon="inline-end" />
-            </Link>
-          </Button>
+            </Button>
+          </Link>
         </div>
       </div>
     );
