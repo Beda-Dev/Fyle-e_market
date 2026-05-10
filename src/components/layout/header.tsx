@@ -99,7 +99,7 @@ export function Header() {
             <Link href="/" className="flex items-center gap-2">
               <div className="relative w-10 h-10 lg:w-12 lg:h-12">
                 <Image
-                  src="/logo eburnie.png"
+                  src="/logo-eburnie.png"
                   alt="Eburnie"
                   fill
                   className="object-contain"
@@ -112,7 +112,7 @@ export function Header() {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-8">
+            <nav className="hidden lg:flex items-center gap-8 ml-8">
               {navLinks.map((link) => (
                 <div
                   key={link.href}
