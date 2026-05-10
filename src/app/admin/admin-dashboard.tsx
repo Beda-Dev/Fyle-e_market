@@ -12,7 +12,8 @@ import {
   CheckCircle,
   Clock,
   Truck,
-  Home
+  Home,
+  Settings
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -120,7 +121,7 @@ export function AdminDashboard() {
               <Link href="/" className="flex items-center gap-2">
                 <div className="relative size-10 bg-brand-brown rounded-lg p-1">
                   <Image
-                    src="/logo eburnie.png"
+                    src="/logo-eburnie.png"
                     alt="Eburnie"
                     fill
                     className="object-contain"
@@ -303,13 +304,13 @@ export function AdminDashboard() {
                 </CardContent>
               </Card>
             </Link>
-            <Link href="/">
+            <Link href="/admin/settings">
               <Card className="hover:border-brand-orange transition-colors cursor-pointer">
                 <CardContent className="p-4 flex flex-col items-center text-center">
                   <div className="size-12 rounded-full bg-purple-50 flex items-center justify-center mb-3">
-                    <Home className="size-6 text-purple-600" />
+                    <Settings className="size-6 text-purple-600" />
                   </div>
-                  <p className="font-medium text-sm">Voir la boutique</p>
+                  <p className="font-medium text-sm">Paramètres</p>
                 </CardContent>
               </Card>
             </Link>

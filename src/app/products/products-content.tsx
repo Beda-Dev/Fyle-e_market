@@ -319,7 +319,7 @@ export function ProductsContent({ products, categories }: ProductsContentProps) 
       {/* Main content */}
       <div className="flex gap-8">
         {/* Desktop Filters Sidebar */}
-        <aside className="hidden lg:block w-64 flex-shrink-0">
+        <aside className="hidden lg:block w-64 shrink-0">
           <div className="sticky top-32 bg-card rounded-xl border p-6">
             <h2 className="font-heading font-semibold text-lg mb-6">Filtres</h2>
             <FilterContent />

@@ -21,6 +21,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProductCard } from "@/components/products/product-card";
 import { useCartStore } from "@/store/cart-store";
+import { useFavoritesStore } from "@/store/favorites-store";
 import {
   formatPrice,
   getDiscountPercentage,
@@ -39,6 +40,8 @@ export function ProductDetailContent({
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCartStore();
+  const { toggleFavorite, isFavorite } = useFavoritesStore();
+  const isProductFavorite = isFavorite(product.id);
 
   // image principale + galerie
   const gallery = [product.imageUrl, ...(product.images ?? [])].filter(Boolean);
@@ -121,7 +124,7 @@ export function ProductDetailContent({
                 <button
                   key={index}
                   onClick={() => setSelectedImage(index)}
-                  className={`relative size-20 rounded-lg overflow-hidden flex-shrink-0 ring-2 transition-all ${
+                  className={`relative size-20 rounded-lg overflow-hidden shrink-0 ring-2 transition-all ${
                     selectedImage === index
                       ? "ring-primary"
                       : "ring-transparent hover:ring-primary/50"
@@ -214,11 +217,17 @@ export function ProductDetailContent({
               )}
             </Button>
 
-            <Button variant="outline" size="icon" className="flex-shrink-0">
-              <Heart data-icon />
+            <Button
+              variant="outline"
+              size="icon"
+              className={`shrink-0 ${isProductFavorite ? "bg-primary text-white border-primary" : ""}`}
+              onClick={() => toggleFavorite(product)}
+              aria-label={isProductFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+            >
+              <Heart data-icon className={isProductFavorite ? "fill-current" : ""} />
             </Button>
 
-            <Button variant="outline" size="icon" className="flex-shrink-0">
+            <Button variant="outline" size="icon" className="shrink-0">
               <Share2 data-icon />
             </Button>
           </div>
@@ -242,21 +251,21 @@ export function ProductDetailContent({
           {/* Benefits */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-              <Truck className="text-primary flex-shrink-0" data-icon />
+              <Truck className="text-primary shrink-0" data-icon />
               <div>
-                <p className="text-sm font-medium">Livraison gratuite</p>
-                <p className="text-xs text-muted-foreground">Dès 50 000 FCFA</p>
+                <p className="text-sm font-medium">Livraison rapide</p>
+                <p className="text-xs text-muted-foreground">Partout en Côte d'Ivoire</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-              <Shield className="text-primary flex-shrink-0" data-icon />
+              <Shield className="text-primary shrink-0" data-icon />
               <div>
                 <p className="text-sm font-medium">Garantie 1 an</p>
                 <p className="text-xs text-muted-foreground">Service après-vente</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-              <RotateCcw className="text-primary flex-shrink-0" data-icon />
+              <RotateCcw className="text-primary shrink-0" data-icon />
               <div>
                 <p className="text-sm font-medium">Retour facile</p>
                 <p className="text-xs text-muted-foreground">Sous 14 jours</p>
@@ -315,9 +324,7 @@ export function ProductDetailContent({
                 Frais de livraison
               </h4>
               <p>
-                Livraison gratuite pour les commandes de plus de 50 000 FCFA.
-                <br />
-                Frais standard : 2 500 FCFA
+                Frais de livraison : 2 500 FCFA
               </p>
             </div>
             <div>

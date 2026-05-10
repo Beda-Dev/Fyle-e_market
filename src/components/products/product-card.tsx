@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCartStore } from "@/store/cart-store";
+import { useFavoritesStore } from "@/store/favorites-store";
 import { formatPrice, getDiscountPercentage, type Product } from "@/lib/mock-data";
 
 interface ProductCardProps {
@@ -17,6 +18,8 @@ interface ProductCardProps {
 
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
   const { addItem } = useCartStore();
+  const { toggleFavorite, isFavorite } = useFavoritesStore();
+  const isProductFavorite = isFavorite(product.id);
   const discountPercentage = getDiscountPercentage(
     product.price,
     product.originalPrice
@@ -60,10 +63,11 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             <Button
               size="icon"
               variant="secondary"
-              className="size-9 rounded-full bg-white shadow-md hover:bg-primary hover:text-white"
-              aria-label="Ajouter aux favoris"
+              className={`size-9 rounded-full shadow-md ${isProductFavorite ? "bg-primary text-white" : "bg-white hover:bg-primary hover:text-white"}`}
+              aria-label={isProductFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+              onClick={() => toggleFavorite(product)}
             >
-              <Heart data-icon />
+              <Heart data-icon className={isProductFavorite ? "fill-current" : ""} />
             </Button>
             <Link href={`/products/${product.slug}`} aria-label="Voir le produit">
               <Button

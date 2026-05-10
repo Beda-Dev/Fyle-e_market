@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -121,11 +122,13 @@ export function OrdersContent({ orders }: OrdersContentProps) {
                   <div className="space-y-4">
                     {order.items.map((item) => (
                       <div key={item.id} className="flex gap-4">
-                        <div className="relative size-20 flex-shrink-0">
-                          <img
+                        <div className="relative size-20 shrink-0 rounded-lg overflow-hidden">
+                          <Image
                             src={item.product.imageUrl}
                             alt={item.product.name}
-                            className="object-cover rounded-lg"
+                            fill
+                            className="object-cover"
+                            sizes="80px"
                           />
                         </div>
                         <div className="flex-1">

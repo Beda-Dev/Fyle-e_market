@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
+import { useToast } from "@/hooks/use-toast"
 import {
   ArrowLeft,
   Camera,
@@ -20,7 +21,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { CameraCapture } from "@/components/admin/camera-capture"
-import type { Category } from "@/lib/mock-data"
+import { formatPriceInput, parsePriceInput, type Category } from "@/lib/mock-data"
 import type { Product } from "@prisma/client"
 
 // ─── slugify ─────────────────────────────────────────────────────────────
@@ -55,6 +56,7 @@ export function ProductForm({ product }: ProductFormProps) {
   const [cameraOpen, setCameraOpen] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { toast } = useToast()
   const [dragOver, setDragOver] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -63,8 +65,8 @@ export function ProductForm({ product }: ProductFormProps) {
   const [slug, setSlug] = useState(product.slug)
   const [slugTouched, setSlugTouched] = useState(false)
   const [description, setDescription] = useState(product.description)
-  const [price, setPrice] = useState(product.price.toString())
-  const [originalPrice, setOriginalPrice] = useState(product.originalPrice.toString())
+  const [price, setPrice] = useState(formatPriceInput(product.price.toString()))
+  const [originalPrice, setOriginalPrice] = useState(formatPriceInput(product.originalPrice.toString()))
   const [stock, setStock] = useState(product.stock.toString())
   const [categoryId, setCategoryId] = useState(product.categoryId)
   const [isFeatured, setIsFeatured] = useState(product.isFeatured)
@@ -167,8 +169,8 @@ export function ProductForm({ product }: ProductFormProps) {
       setError("Selectionne une categorie")
       return
     }
-    const priceNum = Number(price)
-    const origPriceNum = Number(originalPrice || price)
+    const priceNum = parsePriceInput(price)
+    const origPriceNum = parsePriceInput(originalPrice) || priceNum
     if (!priceNum || priceNum <= 0) {
       setError("Le prix doit etre positif")
       return
@@ -229,9 +231,11 @@ export function ProductForm({ product }: ProductFormProps) {
         throw new Error(updateJson.error || "Mise à jour echouee")
       }
 
+      toast({ title: "Produit modifié", description: "Les modifications ont été enregistrées." })
       router.push("/admin/products")
       router.refresh()
     } catch (e) {
+      toast({ title: "Erreur", description: e instanceof Error ? e.message : "Une erreur est survenue", variant: "destructive" })
       setError(e instanceof Error ? e.message : "Une erreur est survenue")
       setSubmitting(false)
     }
@@ -497,12 +501,11 @@ export function ProductForm({ product }: ProductFormProps) {
                 </Label>
                 <Input
                   id="price"
-                  type="number"
-                  min="0"
-                  step="100"
+                  type="text"
+                  inputMode="numeric"
                   value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  placeholder="89990"
+                  onChange={(e) => setPrice(formatPriceInput(e.target.value))}
+                  placeholder="89 990"
                   required
                   className="h-11"
                 />
@@ -514,12 +517,11 @@ export function ProductForm({ product }: ProductFormProps) {
                 </Label>
                 <Input
                   id="originalPrice"
-                  type="number"
-                  min="0"
-                  step="100"
+                  type="text"
+                  inputMode="numeric"
                   value={originalPrice}
-                  onChange={(e) => setOriginalPrice(e.target.value)}
-                  placeholder="119990"
+                  onChange={(e) => setOriginalPrice(formatPriceInput(e.target.value))}
+                  placeholder="119 990"
                   className="h-11"
                 />
               </div>

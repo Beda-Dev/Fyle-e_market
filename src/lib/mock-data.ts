@@ -71,3 +71,17 @@ export function getDiscountPercentage(
   if (!originalPrice || originalPrice <= price) return null
   return Math.round(((originalPrice - price) / originalPrice) * 100)
 }
+
+// Formate un nombre pour affichage dans un input (ex: "1 000 000")
+export function formatPriceInput(value: string): string {
+  // On ne garde que les chiffres
+  const digits = value.replace(/\D/g, '')
+  if (!digits) return ''
+  // On formate avec des espaces comme séparateur de milliers
+  return Number(digits).toLocaleString('fr-FR')
+}
+
+// Parse un prix formaté en nombre (ex: "1 000 000" → 1000000)
+export function parsePriceInput(value: string): number {
+  return Number(value.replace(/\s/g, '').replace(/\D/g, '')) || 0
+}

@@ -10,7 +10,7 @@ const features = [
   {
     icon: Truck,
     title: "Livraison Rapide",
-    description: "Gratuite dès 50 000 FCFA",
+    description: "Partout en Côte d'Ivoire",
   },
   {
     icon: Shield,
@@ -163,7 +163,7 @@ export function HeroSection() {
                 transition={{ duration: 0.4, delay: index * 0.1 }}
                 className="flex items-center gap-3"
               >
-                <div className="size-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                <div className="size-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
                   <feature.icon className="text-brand-orange" data-icon />
                 </div>
                 <div>

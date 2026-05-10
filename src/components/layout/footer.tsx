@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, Phone, MapPin, Globe } from "lucide-react";
@@ -5,34 +8,44 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
+interface SiteSettings {
+  customerService: string;
+  email: string | null;
+  whatsapp: string | null;
+  slogan: string;
+  location: string | null;
+}
+
 const footerLinks = {
   shop: [
-    { label: "Nouveautés", href: "/products?sort=newest" },
-    { label: "Meilleures ventes", href: "/products?sort=popular" },
-    { label: "Promotions", href: "/products?sale=true" },
-    { label: "Toutes les catégories", href: "/categories" },
+    { label: "Tous les produits", href: "/products" },
+    { label: "Catégories", href: "/categories" },
+    { label: "Favoris", href: "/favorites" },
   ],
-  support: [
-    { label: "Centre d'aide", href: "/help" },
-    { label: "Livraison", href: "/shipping" },
-    { label: "Retours & Échanges", href: "/returns" },
-    { label: "Suivre ma commande", href: "/track-order" },
+  account: [
+    { label: "Mon compte", href: "/profile" },
+    { label: "Mes commandes", href: "/orders" },
+    { label: "Mon panier", href: "/cart" },
   ],
   company: [
     { label: "À propos", href: "/about" },
     { label: "Contact", href: "/contact" },
   ],
-  legal: [
-    { label: "CGV", href: "/terms" },
-    { label: "Politique de confidentialité", href: "/privacy" },
-  ],
 };
 
 export function Footer() {
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((r) => r.json())
+      .then((res) => { if (res.data) setSettings(res.data); });
+  }, []);
+
   return (
     <footer className="bg-brand-brown text-white mt-auto">
       {/* Newsletter section */}
-      <div className="bg-[#5D3622]">
+      {/* <div className="bg-[#5D3622]">
         <div className="container mx-auto px-4 py-10">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
             <div className="text-center lg:text-left">
@@ -49,23 +62,23 @@ export function Footer() {
                 placeholder="Votre adresse email"
                 className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus-visible:ring-brand-orange"
               />
-              <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white flex-shrink-0">
+              <Button className="bg-brand-orange hover:bg-brand-orange/90 text-white shrink-0">
                 {"S'inscrire"}
               </Button>
             </form>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Main footer */}
       <div className="container mx-auto px-4 py-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {/* Brand column */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
               <div className="relative size-10 bg-white rounded-lg p-1">
                 <Image
-                  src="/logo eburnie.png"
+                  src="/logo-eburnie.png"
                   alt="Eburnie"
                   fill
                   className="object-contain"
@@ -74,26 +87,28 @@ export function Footer() {
               <span className="font-heading font-bold text-lg">Eburnie</span>
             </Link>
             <p className="text-white/70 text-sm mb-4">
-              Votre destination shopping en ligne pour des produits de qualité.
+              {settings?.slogan || "Votre destination shopping en ligne pour des produits de qualité."}
             </p>
             <div className="flex flex-col gap-2 text-sm">
               <a
-                href="tel:+225000000000"
+                href={`tel:${settings?.customerService || "+225000000000"}`}
                 className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
               >
                 <Phone className="size-4" />
-                +225 00 00 00 00 00
+                {settings?.customerService || "+225 00 00 00 00 00"}
               </a>
-              <a
-                href="mailto:contact@eburnie.com"
-                className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
-              >
-                <Mail className="size-4" />
-                contact@eburnie.com
-              </a>
+              {(settings?.email) && (
+                <a
+                  href={`mailto:${settings.email}`}
+                  className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
+                >
+                  <Mail className="size-4" />
+                  {settings.email}
+                </a>
+              )}
               <span className="flex items-center gap-2 text-white/70">
                 <MapPin className="size-4" />
-                Abidjan, Côte d'Ivoire
+                {settings?.location || "Abidjan, Côte d'Ivoire"}
               </span>
             </div>
           </div>
@@ -115,11 +130,11 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Support links */}
+          {/* Account links */}
           <div>
-            <h4 className="font-heading font-semibold mb-4 text-sm">Support</h4>
+            <h4 className="font-heading font-semibold mb-4 text-sm">Mon compte</h4>
             <ul className="flex flex-col gap-2">
-              {footerLinks.support.map((link) => (
+              {footerLinks.account.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
@@ -137,23 +152,6 @@ export function Footer() {
             <h4 className="font-heading font-semibold mb-4 text-sm">Entreprise</h4>
             <ul className="flex flex-col gap-2">
               {footerLinks.company.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-white/70 hover:text-white transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Legal links */}
-          <div>
-            <h4 className="font-heading font-semibold mb-4 text-sm">Légal</h4>
-            <ul className="flex flex-col gap-2">
-              {footerLinks.legal.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}

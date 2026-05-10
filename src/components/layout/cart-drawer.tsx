@@ -21,9 +21,6 @@ export function CartDrawer() {
     useCartStore();
 
   const totalPrice = getTotalPrice();
-  const shippingThreshold = 50000;
-  const freeShippingProgress = Math.min((totalPrice / shippingThreshold) * 100, 100);
-  const remainingForFreeShipping = shippingThreshold - totalPrice;
 
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && closeCart()}>
@@ -59,33 +56,6 @@ export function CartDrawer() {
           </div>
         ) : (
           <>
-            {/* Free shipping progress */}
-            {remainingForFreeShipping > 0 && (
-              <div className="px-6 py-3 bg-secondary/50">
-                <p className="text-sm text-center mb-2">
-                  Plus que{" "}
-                  <span className="font-semibold text-primary">
-                    {formatPrice(remainingForFreeShipping)}
-                  </span>{" "}
-                  pour la livraison gratuite
-                </p>
-                <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-                  <motion.div
-                    className="h-full bg-primary rounded-full"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${freeShippingProgress}%` }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
-                  />
-                </div>
-              </div>
-            )}
-
-            {remainingForFreeShipping <= 0 && (
-              <div className="px-6 py-3 bg-green-50 text-green-700 text-sm text-center">
-                Félicitations ! Vous bénéficiez de la livraison gratuite
-              </div>
-            )}
-
             {/* Cart items */}
             <ScrollArea className="flex-1">
               <div className="p-6 flex flex-col gap-4">
@@ -99,7 +69,7 @@ export function CartDrawer() {
                       exit={{ opacity: 0, x: -20 }}
                       className="flex gap-4"
                     >
-                      <div className="relative size-20 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                      <div className="relative size-20 rounded-lg overflow-hidden bg-muted shrink-0">
                         <Image
                           src={item.product.imageUrl}
                           alt={item.product.name}

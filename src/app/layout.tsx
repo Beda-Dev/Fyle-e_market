@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
-import { AnimatePresence } from "framer-motion";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -40,9 +39,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-sans">
         <Providers>
-          <AnimatePresence mode="wait">
-            {children}
-          </AnimatePresence>
+          {children}
         </Providers>
       </body>
     </html>

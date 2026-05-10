@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { CheckCircle, ArrowRight, Home, Package, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -88,11 +89,13 @@ export function OrderConfirmationContent({ order }: OrderConfirmationContentProp
               <h3 className="font-medium">Articles commandés</h3>
               {order.items.map((item) => (
                 <div key={item.id} className="flex gap-4">
-                  <div className="relative size-16 flex-shrink-0">
-                    <img
+                  <div className="relative size-16 shrink-0 rounded-lg overflow-hidden">
+                    <Image
                       src={item.product.imageUrl}
                       alt={item.product.name}
-                      className="object-cover rounded-lg"
+                      fill
+                      className="object-cover"
+                      sizes="64px"
                     />
                   </div>
                   <div className="flex-1">
@@ -155,7 +158,7 @@ export function OrderConfirmationContent({ order }: OrderConfirmationContentProp
             </h3>
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-3">
-                <div className="size-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="size-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
                   <span className="text-primary font-bold text-xs">1</span>
                 </div>
                 <p className="text-muted-foreground">
@@ -163,7 +166,7 @@ export function OrderConfirmationContent({ order }: OrderConfirmationContentProp
                 </p>
               </li>
               <li className="flex items-start gap-3">
-                <div className="size-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="size-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
                   <span className="text-primary font-bold text-xs">2</span>
                 </div>
                 <p className="text-muted-foreground">
@@ -171,7 +174,7 @@ export function OrderConfirmationContent({ order }: OrderConfirmationContentProp
                 </p>
               </li>
               <li className="flex items-start gap-3">
-                <div className="size-6 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <div className="size-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
                   <span className="text-primary font-bold text-xs">3</span>
                 </div>
                 <p className="text-muted-foreground">

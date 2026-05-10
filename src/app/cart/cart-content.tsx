@@ -27,8 +27,7 @@ export function CartContent() {
   const [promoCode, setPromoCode] = useState("");
 
   const totalPrice = getTotalPrice();
-  const shippingThreshold = 50000;
-  const shippingCost = totalPrice >= shippingThreshold ? 0 : 2500;
+  const shippingCost = 2500;
   const finalTotal = totalPrice + shippingCost;
 
   if (items.length === 0) {
@@ -100,7 +99,7 @@ export function CartContent() {
                   >
                     <Link
                       href={`/products/${item.product.slug}`}
-                      className="relative size-24 rounded-lg overflow-hidden bg-muted flex-shrink-0"
+                      className="relative size-24 rounded-lg overflow-hidden bg-muted shrink-0"
                     >
                       <Image
                         src={item.product.imageUrl}
@@ -206,24 +205,8 @@ export function CartContent() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Livraison</span>
-                  <span>
-                    {shippingCost === 0 ? (
-                      <span className="text-green-600">Gratuite</span>
-                    ) : (
-                      formatPrice(shippingCost)
-                    )}
-                  </span>
+                  <span>{formatPrice(shippingCost)}</span>
                 </div>
-                {shippingCost > 0 && (
-                  <div className="text-xs text-muted-foreground bg-muted/50 rounded-lg p-3">
-                    <Truck className="inline-block mr-2 size-4" />
-                    Plus que{" "}
-                    <span className="font-medium text-primary">
-                      {formatPrice(shippingThreshold - totalPrice)}
-                    </span>{" "}
-                    pour la livraison gratuite
-                  </div>
-                )}
               </div>
 
               <Separator />

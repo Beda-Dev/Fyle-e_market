@@ -26,6 +26,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useCartStore } from "@/store/cart-store";
+import { useFavoritesStore } from "@/store/favorites-store";
 import type { Category } from "@/lib/mock-data";
 import { CartDrawer } from "./cart-drawer";
 import { useSession, signOut } from "next-auth/react";
@@ -45,6 +46,7 @@ export function Header() {
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const { items, openCart } = useCartStore();
+  const favoriteItems = useFavoritesStore((state) => state.items);
   const [mounted, setMounted] = useState(false);
   const { data: session, status } = useSession();
   const isAdmin = session?.user?.role === "ADMIN";
@@ -196,14 +198,21 @@ export function Header() {
               </Button>
 
               {/* Wishlist */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hidden sm:flex"
-                aria-label="Liste de souhaits"
-              >
-                <Heart data-icon />
-              </Button>
+              <Link href="/favorites">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="hidden sm:flex relative"
+                  aria-label="Liste de souhaits"
+                >
+                  <Heart data-icon />
+                  {mounted && favoriteItems.length > 0 && (
+                    <span className="absolute -top-1 -right-1 size-5 bg-primary text-primary-foreground text-xs font-bold rounded-full flex items-center justify-center">
+                      {favoriteItems.length}
+                    </span>
+                  )}
+                </Button>
+              </Link>
 
               {/* Account */}
               {status === "authenticated" ? (

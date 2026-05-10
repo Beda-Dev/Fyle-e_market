@@ -11,6 +11,7 @@ import Image from "next/image"
 import { motion } from "framer-motion"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { useToast } from "@/hooks/use-toast"
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -24,6 +25,7 @@ export default function RegisterPage() {
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const { toast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -75,6 +77,7 @@ export default function RegisterPage() {
       if (result?.error) {
         setError("Compte créé mais erreur lors de la connexion automatique")
       } else {
+        toast({ title: "Compte créé", description: "Votre compte a été créé avec succès." })
         router.push("/")
         router.refresh()
       }
@@ -95,7 +98,7 @@ export default function RegisterPage() {
         style={{ backgroundColor: "#F9DEC9" }}
       >
         <div className="relative z-10 flex flex-col justify-between w-full px-12 py-12">
-          <h1 className="text-xl font-semibold" style={{ color: "var(--color-brand-brown)" }}>Eburnie</h1>
+          {/* <h1 className="text-xl font-semibold" style={{ color: "var(--color-brand-brown)" }}>Eburnie</h1> */}
 
           <div className="flex-1 flex flex-col items-center justify-center gap-8">
             <motion.div
@@ -122,10 +125,7 @@ export default function RegisterPage() {
             </div>
           </div>
 
-          <div className="flex justify-between items-center text-sm" style={{ color: "var(--color-text-secondary)" }}>
-            <span>Copyright © 2025 Eburnie.</span>
-            <span className="cursor-pointer hover:opacity-80">Politique de confidentialité</span>
-          </div>
+          <div />
         </div>
       </motion.div>
 
@@ -301,10 +301,10 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div>
                 <Button
                   variant="outline"
-                  className="h-12 border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-lg bg-white shadow-none cursor-pointer"
+                  className="w-full h-12 border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-lg bg-white shadow-none cursor-pointer"
                 >
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                     <path

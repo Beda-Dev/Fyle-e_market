@@ -58,7 +58,7 @@ export default function LoginPage() {
         style={{ backgroundColor: "#F9DEC9" }}
       >
         <div className="relative z-10 flex flex-col justify-between w-full px-12 py-12">
-          <h1 className="text-xl font-semibold" style={{ color: "var(--color-brand-brown)" }}>Eburnie</h1>
+          {/* <h1 className="text-xl font-semibold" style={{ color: "var(--color-brand-brown)" }}>Eburnie</h1> */}
 
           <div className="flex-1 flex flex-col items-center justify-center gap-8">
             <motion.div
@@ -85,10 +85,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="flex justify-between items-center text-sm" style={{ color: "var(--color-text-secondary)" }}>
-            <span>Copyright © 2025 Eburnie.</span>
-            <span className="cursor-pointer hover:opacity-80">Politique de confidentialité</span>
-          </div>
+          <div />
         </div>
       </motion.div>
 
@@ -166,20 +163,14 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <input type="checkbox" id="remember" className="rounded border-gray-300 cursor-pointer" />
-                  <Label htmlFor="remember" className="text-sm cursor-pointer" style={{ color: "var(--color-text-secondary)" }}>
-                    Se souvenir de moi
-                  </Label>
-                </div>
-                <Button
-                  variant="link"
-                  className="p-0 h-auto text-sm hover:text-opacity-80 cursor-pointer"
+              <div className="flex justify-end">
+                <Link
+                  href="/forgot-password"
+                  className="text-sm hover:opacity-80"
                   style={{ color: "var(--color-brand-orange)" }}
                 >
                   Mot de passe oublié ?
-                </Button>
+                </Link>
               </div>
 
               <Button
@@ -205,10 +196,10 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div>
                 <Button
                   variant="outline"
-                  className="h-12 border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-lg bg-white shadow-none cursor-pointer"
+                  className="w-full h-12 border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-lg bg-white shadow-none cursor-pointer"
                 >
                   <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                     <path
@@ -230,15 +221,6 @@ export default function LoginPage() {
                   </svg>
                   Google
                 </Button>
-                {/* <Button
-                  variant="outline"
-                  className="h-12 border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-lg bg-white shadow-none cursor-pointer"
-                >
-                  <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-.96 3.64-.82 1.57.06 2.75.63 3.54 1.51-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
-                  </svg>
-                  Apple
-                </Button> */}
               </div>
             </>
 

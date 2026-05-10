@@ -24,12 +24,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useCartStore } from "@/store/cart-store";
 import { formatPrice } from "@/lib/mock-data";
+import { useToast } from "@/hooks/use-toast";
 
 type CheckoutStep = "shipping" | "payment" | "confirmation";
 
 export function CheckoutContent() {
   const router = useRouter();
-  const { items, getTotalPrice, clearCart } = useCartStore();
+  const { toast } = useToast();
+  const { items, clearCart, getTotalPrice } = useCartStore();
   const [currentStep, setCurrentStep] = useState<CheckoutStep>("shipping");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -88,7 +90,7 @@ export function CheckoutContent() {
       router.push(`/order-confirmation/${orderId}`);
     } catch (error) {
       console.error("Order error:", error);
-      alert(error instanceof Error ? error.message : "Erreur lors de la commande");
+      toast({ title: "Erreur", description: error instanceof Error ? error.message : "Erreur lors de la commande", variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }
@@ -469,7 +471,7 @@ export function CheckoutContent() {
                 <div className="max-h-[300px] overflow-y-auto flex flex-col gap-3">
                   {items.map((item) => (
                     <div key={item.product.id} className="flex gap-3">
-                      <div className="relative size-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                      <div className="relative size-16 rounded-lg overflow-hidden bg-muted shrink-0">
                         <Image
                           src={item.product.imageUrl}
                           alt={item.product.name}

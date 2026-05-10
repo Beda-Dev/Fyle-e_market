@@ -33,15 +33,17 @@ enum OrderStatus {
 // ─── Utilisateur ─────────────────────────────────────────────────────────────
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String   // hashé avec bcrypt
-  firstName String
-  lastName  String
-  phone     String?
-  role      Role     @default(CLIENT)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String    @id @default(cuid())
+  email            String    @unique
+  password         String    // hashé avec bcrypt
+  firstName        String
+  lastName         String
+  phone            String?
+  role             Role      @default(CLIENT)
+  resetToken       String?   @unique
+  resetTokenExpiry DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   orders    Order[]
 
@@ -119,6 +121,7 @@ model Order {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
+  @@map("orders")
   @@index([userId])
   @@index([status])
   @@index([createdAt])
@@ -137,6 +140,7 @@ model OrderItem {
   productId String
   product   Product @relation(fields: [productId], references: [id])
 
+  @@map("order_items")
   @@index([orderId])
   @@index([productId])
 }
