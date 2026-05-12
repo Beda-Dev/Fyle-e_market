@@ -40,6 +40,9 @@ export const productUpdateSchema = productCreateSchema.partial()
 export const categoryCreateSchema = z.object({
   name: z.string().min(1).max(80),
   slug: slugSchema,
+  description: z.string().max(500).nullable().optional(),
+  image: z.string().max(500).nullable().optional(),
+  imagePublicId: z.string().max(200).nullable().optional(),
 })
 
 export const categoryUpdateSchema = categoryCreateSchema.partial()
@@ -82,6 +85,11 @@ export const orderStatusUpdateSchema = z.object({
   status: orderStatusSchema,
 })
 
+export const orderBulkStatusUpdateSchema = z.object({
+  ids: z.array(cuidSchema).min(1).max(100),
+  status: orderStatusSchema,
+})
+
 export const reviewCreateSchema = z.object({
   rating: z.number().int().min(1).max(5),
   comment: z.string().max(2000).nullable().optional(),
@@ -95,6 +103,17 @@ export const reviewListQuerySchema = z.object({
 export const adminListQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(100).default(20),
+})
+
+export const adminUserListQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+  search: z.string().max(100).optional(),
+  role: z.enum(['ADMIN', 'CLIENT']).optional(),
+})
+
+export const adminUserUpdateSchema = z.object({
+  role: z.enum(['ADMIN', 'CLIENT']),
 })
 
 export const settingsUpdateSchema = z.object({

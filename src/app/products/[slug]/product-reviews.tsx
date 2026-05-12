@@ -109,7 +109,7 @@ export function ProductReviews({ productSlug }: ProductReviewsProps) {
       toast({
         title: "Note requise",
         description: "Sélectionnez une note entre 1 et 5 étoiles.",
-        variant: "destructive",
+        variant: "warning",
       });
       return;
     }
@@ -124,7 +124,7 @@ export function ProductReviews({ productSlug }: ProductReviewsProps) {
         const json = await res.json();
         throw new Error(json.error || "Erreur lors de l'envoi");
       }
-      toast({ title: "Merci pour votre avis !" });
+      toast({ title: "Merci pour votre avis !", variant: "success" });
       setRating(0);
       setComment("");
       setPage(1);
@@ -133,7 +133,7 @@ export function ProductReviews({ productSlug }: ProductReviewsProps) {
       toast({
         title: "Erreur",
         description: error instanceof Error ? error.message : "Erreur inconnue",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setSubmitting(false);
@@ -150,7 +150,7 @@ export function ProductReviews({ productSlug }: ProductReviewsProps) {
       toast({
         title: "Erreur",
         description: error instanceof Error ? error.message : "Erreur inconnue",
-        variant: "destructive",
+        variant: "error",
       });
     }
   };

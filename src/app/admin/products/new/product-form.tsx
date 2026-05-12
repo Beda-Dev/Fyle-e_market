@@ -205,11 +205,11 @@ export function ProductForm() {
         throw new Error(createJson.error || "Creation echouee")
       }
 
-      toast({ title: "Produit créé", description: "Le produit a été ajouté avec succès." })
+      toast({ title: "Produit créé", description: "Le produit a été ajouté avec succès.", variant: "success" })
       router.push("/admin/products")
       router.refresh()
     } catch (e) {
-      toast({ title: "Erreur", description: e instanceof Error ? e.message : "Une erreur est survenue", variant: "destructive" })
+      toast({ title: "Erreur", description: e instanceof Error ? e.message : "Une erreur est survenue", variant: "error" })
       setError(e instanceof Error ? e.message : "Une erreur est survenue")
       setSubmitting(false)
     }

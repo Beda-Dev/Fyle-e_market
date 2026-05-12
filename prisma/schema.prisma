@@ -54,13 +54,14 @@ model User {
 // ─── Catégorie produit ────────────────────────────────────────────────────────
 
 model Category {
-  id          String    @id @default(cuid())
-  name        String    @unique
-  slug        String    @unique
-  description String?   @db.Text
-  image       String?
-  products    Product[]
-  createdAt   DateTime  @default(now())
+  id            String    @id @default(cuid())
+  name          String    @unique
+  slug          String    @unique
+  description   String?   @db.Text
+  image         String?
+  imagePublicId String?
+  products      Product[]
+  createdAt     DateTime  @default(now())
 
   @@index([slug])
 }

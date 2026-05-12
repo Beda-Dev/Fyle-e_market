@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Eye, CheckCircle, Clock, Truck, XCircle } from "lucide-react";
+import { ArrowLeft, Eye, CheckCircle, Clock, Truck, XCircle, X } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useToast } from "@/hooks/use-toast";
 import { formatPrice, type Order } from "@/lib/mock-data";
+
+type OrderStatus = "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+
+const STATUS_OPTIONS: { value: OrderStatus; label: string }[] = [
+  { value: "PENDING", label: "En attente" },
+  { value: "CONFIRMED", label: "Confirmée" },
+  { value: "SHIPPED", label: "Expédiée" },
+  { value: "DELIVERED", label: "Livrée" },
+  { value: "CANCELLED", label: "Annulée" },
+];
 
 type AdminOrder = Order & {
   user?: {
@@ -59,12 +70,16 @@ interface ListMeta {
 }
 
 export default function AdminOrdersPage() {
+  const { toast } = useToast();
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [meta, setMeta] = useState<ListMeta | null>(null);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkStatus, setBulkStatus] = useState<OrderStatus | "">("");
+  const [bulkUpdating, setBulkUpdating] = useState(false);
 
-  useEffect(() => {
+  const loadOrders = () => {
     setLoading(true);
     fetch(`/api/admin/orders?page=${page}&pageSize=${PAGE_SIZE}`)
       .then((r) => r.json())
@@ -73,7 +88,90 @@ export default function AdminOrdersPage() {
         setMeta(j.meta ?? null);
       })
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    loadOrders();
+    // Reset la sélection à chaque changement de page
+    setSelectedIds(new Set());
+    setBulkStatus("");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
+
+  const allVisibleSelected = useMemo(
+    () => orders.length > 0 && orders.every((o) => selectedIds.has(o.id)),
+    [orders, selectedIds]
+  );
+
+  const toggleOne = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleAllVisible = () => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (allVisibleSelected) {
+        orders.forEach((o) => next.delete(o.id));
+      } else {
+        orders.forEach((o) => next.add(o.id));
+      }
+      return next;
+    });
+  };
+
+  const clearSelection = () => {
+    setSelectedIds(new Set());
+    setBulkStatus("");
+  };
+
+  const handleBulkUpdate = async () => {
+    if (!bulkStatus || selectedIds.size === 0) return;
+    if (
+      bulkStatus === "CANCELLED" &&
+      !confirm(
+        `Annuler ${selectedIds.size} commande${selectedIds.size > 1 ? "s" : ""} ? Le stock des produits sera restauré.`
+      )
+    ) {
+      return;
+    }
+
+    setBulkUpdating(true);
+    try {
+      const res = await fetch(`/api/admin/orders/bulk`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ids: Array.from(selectedIds),
+          status: bulkStatus,
+        }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(json.error || "Échec de la mise à jour");
+      }
+      const { updated, skipped } = json.data ?? {};
+      toast({
+        title: "Statuts mis à jour",
+        description: `${updated} commande${updated > 1 ? "s" : ""} mise${updated > 1 ? "s" : ""} à jour${skipped ? ` — ${skipped} ignorée${skipped > 1 ? "s" : ""} (déjà au bon statut)` : ""}.`,
+        variant: "success",
+      });
+      clearSelection();
+      loadOrders();
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: error instanceof Error ? error.message : "Erreur inconnue",
+        variant: "error",
+      });
+    } finally {
+      setBulkUpdating(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -98,11 +196,61 @@ export default function AdminOrdersPage() {
       </header>
 
       <main className="container mx-auto px-4 py-6">
+        {selectedIds.size > 0 && (
+          <div className="sticky top-[72px] z-30 mb-4 bg-card border rounded-lg shadow-sm px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <span className="text-sm font-medium">
+              {selectedIds.size} commande{selectedIds.size > 1 ? "s" : ""} sélectionnée{selectedIds.size > 1 ? "s" : ""}
+            </span>
+            <div className="flex-1" />
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <select
+                value={bulkStatus}
+                onChange={(e) => setBulkStatus(e.target.value as OrderStatus | "")}
+                className="h-9 rounded-md border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                disabled={bulkUpdating}
+              >
+                <option value="">— Choisir un statut —</option>
+                {STATUS_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+              <Button
+                size="sm"
+                onClick={handleBulkUpdate}
+                disabled={!bulkStatus || bulkUpdating}
+              >
+                {bulkUpdating ? "Application..." : "Appliquer"}
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={clearSelection}
+                disabled={bulkUpdating}
+                aria-label="Annuler la sélection"
+              >
+                <X className="size-4" />
+              </Button>
+            </div>
+          </div>
+        )}
+
         <Card>
           <CardContent className="p-0">
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-10">
+                    <input
+                      type="checkbox"
+                      aria-label="Tout sélectionner sur cette page"
+                      checked={allVisibleSelected}
+                      onChange={toggleAllVisible}
+                      disabled={orders.length === 0}
+                      className="size-4 accent-primary cursor-pointer"
+                    />
+                  </TableHead>
                   <TableHead>Commande</TableHead>
                   <TableHead>Client</TableHead>
                   <TableHead>Date</TableHead>
@@ -114,7 +262,19 @@ export default function AdminOrdersPage() {
               </TableHeader>
               <TableBody>
                 {orders.map((order) => (
-                  <TableRow key={order.id}>
+                  <TableRow
+                    key={order.id}
+                    data-state={selectedIds.has(order.id) ? "selected" : undefined}
+                  >
+                    <TableCell>
+                      <input
+                        type="checkbox"
+                        aria-label={`Sélectionner la commande ${order.id.slice(-6).toUpperCase()}`}
+                        checked={selectedIds.has(order.id)}
+                        onChange={() => toggleOne(order.id)}
+                        className="size-4 accent-primary cursor-pointer"
+                      />
+                    </TableCell>
                     <TableCell className="font-medium">
                       #{order.id.slice(-6).toUpperCase()}
                     </TableCell>
@@ -147,9 +307,11 @@ export default function AdminOrdersPage() {
                     </TableCell>
                     <TableCell>{getStatusBadge(order.status)}</TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="icon">
-                        <Eye className="size-4" />
-                      </Button>
+                      <Link href={`/admin/orders/${order.id}`} aria-label="Voir le détail de la commande">
+                        <Button variant="ghost" size="icon">
+                          <Eye className="size-4" />
+                        </Button>
+                      </Link>
                     </TableCell>
                   </TableRow>
                 ))}

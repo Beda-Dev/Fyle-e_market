@@ -68,12 +68,13 @@ export default function AdminSettingsPage() {
       toast({
         title: "Paramètres sauvegardés",
         description: "Les modifications ont été enregistrées avec succès.",
+        variant: "success",
       });
     } catch (error) {
       toast({
         title: "Erreur",
         description: error instanceof Error ? error.message : "Une erreur est survenue",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsSaving(false);

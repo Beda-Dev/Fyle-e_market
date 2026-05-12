@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { 
-  Package, 
-  ShoppingCart, 
-  Users, 
+import {
+  Package,
+  ShoppingCart,
+  Users,
   TrendingUp,
   ArrowUpRight,
   Eye,
@@ -13,7 +13,8 @@ import {
   Clock,
   Truck,
   Home,
-  Settings
+  Settings,
+  Tag
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -273,7 +274,7 @@ export function AdminDashboard() {
         {/* Quick Actions */}
         <div>
           <h2 className="font-heading text-lg font-semibold mb-4">Actions rapides</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             <Link href="/admin/products/new">
               <Card className="hover:border-brand-orange transition-colors cursor-pointer">
                 <CardContent className="p-4 flex flex-col items-center text-center">
@@ -301,6 +302,26 @@ export function AdminDashboard() {
                     <Eye className="size-6 text-green-600" />
                   </div>
                   <p className="font-medium text-sm">Gérer les produits</p>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/admin/categories">
+              <Card className="hover:border-brand-orange transition-colors cursor-pointer">
+                <CardContent className="p-4 flex flex-col items-center text-center">
+                  <div className="size-12 rounded-full bg-amber-50 flex items-center justify-center mb-3">
+                    <Tag className="size-6 text-amber-600" />
+                  </div>
+                  <p className="font-medium text-sm">Gérer les catégories</p>
+                </CardContent>
+              </Card>
+            </Link>
+            <Link href="/admin/users">
+              <Card className="hover:border-brand-orange transition-colors cursor-pointer">
+                <CardContent className="p-4 flex flex-col items-center text-center">
+                  <div className="size-12 rounded-full bg-pink-50 flex items-center justify-center mb-3">
+                    <Users className="size-6 text-pink-600" />
+                  </div>
+                  <p className="font-medium text-sm">Gérer les utilisateurs</p>
                 </CardContent>
               </Card>
             </Link>

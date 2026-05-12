@@ -102,21 +102,6 @@ export function Header() {
             : "bg-transparent"
         }`}
       >
-        {/* Top bar */}
-        {/* <div className="hidden lg:block bg-brand-brown text-white py-2">
-          <div className="container mx-auto px-4 flex items-center justify-between text-sm">
-            <p>Livraison gratuite pour les commandes de plus de 50 000 FCFA</p>
-            <div className="flex items-center gap-6">
-              <Link href="/track-order" className="hover:text-[#F9DEC9] transition-colors">
-                Suivre ma commande
-              </Link>
-              <Link href="/help" className="hover:text-[#F9DEC9] transition-colors">
-                Aide
-              </Link>
-            </div>
-          </div>
-        </div> */}
-
         {/* Main header */}
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16 lg:h-20">

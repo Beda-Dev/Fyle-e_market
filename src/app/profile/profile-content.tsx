@@ -81,19 +81,20 @@ export function ProfileContent({ userId }: ProfileContentProps) {
         toast({
           title: "Profil mis à jour",
           description: "Vos informations ont été enregistrées avec succès.",
+          variant: "success",
         });
       } else {
         toast({
           title: "Erreur",
           description: json.error || "Une erreur est survenue.",
-          variant: "destructive",
+          variant: "error",
         });
       }
     } catch (error) {
       toast({
         title: "Erreur",
         description: "Une erreur est survenue.",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setSaving(false);
@@ -107,7 +108,7 @@ export function ProfileContent({ userId }: ProfileContentProps) {
       toast({
         title: "Erreur",
         description: "Les mots de passe ne correspondent pas.",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -116,7 +117,7 @@ export function ProfileContent({ userId }: ProfileContentProps) {
       toast({
         title: "Erreur",
         description: "Le mot de passe doit contenir au moins 6 caractères.",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -137,6 +138,7 @@ export function ProfileContent({ userId }: ProfileContentProps) {
         toast({
           title: "Mot de passe mis à jour",
           description: "Votre mot de passe a été changé avec succès.",
+          variant: "success",
         });
         setCurrentPassword("");
         setNewPassword("");
@@ -146,14 +148,14 @@ export function ProfileContent({ userId }: ProfileContentProps) {
         toast({
           title: "Erreur",
           description: json.error || "Une erreur est survenue.",
-          variant: "destructive",
+          variant: "error",
         });
       }
     } catch (error) {
       toast({
         title: "Erreur",
         description: "Une erreur est survenue.",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setSaving(false);

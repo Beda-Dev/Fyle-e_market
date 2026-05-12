@@ -1,13 +1,22 @@
 import * as React from "react"
 
+export type ToastVariant =
+  | "default"
+  | "success"
+  | "info"
+  | "warning"
+  | "error"
+  | "destructive" // alias historique de "error"
+
 type ToastProps = {
   title?: string
   description?: string
-  variant?: "default" | "destructive"
+  variant?: ToastVariant
+  duration?: number
 }
 
-const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 5000
+const TOAST_LIMIT = 3
+const TOAST_REMOVE_DELAY = 4000
 
 type ToasterToast = ToastProps & {
   id: string
@@ -136,7 +145,7 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
-function toast({ ...props }: Toast) {
+function toast({ duration, ...props }: Toast) {
   const id = genId()
 
   const update = (props: ToasterToast) =>
@@ -155,6 +164,14 @@ function toast({ ...props }: Toast) {
       open: true,
     },
   })
+
+  // Auto-dismiss après `duration` (par défaut TOAST_REMOVE_DELAY)
+  const autoDismissDelay = duration ?? TOAST_REMOVE_DELAY
+  if (autoDismissDelay > 0) {
+    setTimeout(() => {
+      dismiss()
+    }, autoDismissDelay)
+  }
 
   return {
     id: id,

@@ -47,6 +47,7 @@ export function ContactContent({ settings }: ContactContentProps) {
         toast({
           title: "Message envoyé",
           description: "Nous vous répondrons dans les plus brefs délais.",
+          variant: "success",
         });
         setFormData({ name: "", email: "", subject: "", message: "" });
       } else {
@@ -54,14 +55,14 @@ export function ContactContent({ settings }: ContactContentProps) {
         toast({
           title: "Erreur",
           description: json.error || "Une erreur est survenue.",
-          variant: "destructive",
+          variant: "error",
         });
       }
     } catch (error) {
       toast({
         title: "Erreur",
         description: "Une erreur est survenue.",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setSending(false);

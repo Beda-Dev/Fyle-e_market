@@ -82,7 +82,7 @@ export function CheckoutContent() {
       toast({
         title: "Téléphone requis",
         description: "Veuillez renseigner un numéro de téléphone pour valider la commande.",
-        variant: "destructive",
+        variant: "warning",
       });
       setCurrentStep("shipping");
       return;
@@ -118,7 +118,7 @@ export function CheckoutContent() {
       router.push(`/order-confirmation/${orderId}`);
     } catch (error) {
       console.error("Order error:", error);
-      toast({ title: "Erreur", description: error instanceof Error ? error.message : "Erreur lors de la commande", variant: "destructive" });
+      toast({ title: "Erreur", description: error instanceof Error ? error.message : "Erreur lors de la commande", variant: "error" });
     } finally {
       setIsSubmitting(false);
     }

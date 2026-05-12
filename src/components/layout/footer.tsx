@@ -31,6 +31,12 @@ const footerLinks = {
     { label: "À propos", href: "/about" },
     { label: "Contact", href: "/contact" },
   ],
+  legal: [
+    { label: "Mentions légales", href: "#" },
+    { label: "CGV", href: "#" },
+    { label: "Politique de confidentialité", href: "#" },
+    { label: "Cookies", href: "#" },
+  ],
 };
 
 export function Footer() {
@@ -72,7 +78,7 @@ export function Footer() {
 
       {/* Main footer */}
       <div className="container mx-auto px-4 py-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
           {/* Brand column */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
@@ -153,6 +159,23 @@ export function Footer() {
             <ul className="flex flex-col gap-2">
               {footerLinks.company.map((link) => (
                 <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-white/70 hover:text-white transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Legal links — placeholders à brancher quand les pages existeront */}
+          <div>
+            <h4 className="font-heading font-semibold mb-4 text-sm">Légal</h4>
+            <ul className="flex flex-col gap-2">
+              {footerLinks.legal.map((link) => (
+                <li key={link.label}>
                   <Link
                     href={link.href}
                     className="text-sm text-white/70 hover:text-white transition-colors"

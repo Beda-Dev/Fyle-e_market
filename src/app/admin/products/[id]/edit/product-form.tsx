@@ -231,11 +231,11 @@ export function ProductForm({ product }: ProductFormProps) {
         throw new Error(updateJson.error || "Mise à jour echouee")
       }
 
-      toast({ title: "Produit modifié", description: "Les modifications ont été enregistrées." })
+      toast({ title: "Produit modifié", description: "Les modifications ont été enregistrées.", variant: "success" })
       router.push("/admin/products")
       router.refresh()
     } catch (e) {
-      toast({ title: "Erreur", description: e instanceof Error ? e.message : "Une erreur est survenue", variant: "destructive" })
+      toast({ title: "Erreur", description: e instanceof Error ? e.message : "Une erreur est survenue", variant: "error" })
       setError(e instanceof Error ? e.message : "Une erreur est survenue")
       setSubmitting(false)
     }

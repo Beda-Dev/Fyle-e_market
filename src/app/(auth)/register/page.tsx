@@ -77,7 +77,7 @@ export default function RegisterPage() {
       if (result?.error) {
         setError("Compte créé mais erreur lors de la connexion automatique")
       } else {
-        toast({ title: "Compte créé", description: "Votre compte a été créé avec succès." })
+        toast({ title: "Compte créé", description: "Votre compte a été créé avec succès.", variant: "success" })
         router.push("/")
         router.refresh()
       }
