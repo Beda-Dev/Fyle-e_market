@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import {
   ChevronRight,
@@ -11,8 +12,6 @@ import {
   CreditCard,
   MapPin,
   Phone,
-  User,
-  Mail,
   FileText,
   Check,
   ShoppingBag,
@@ -31,20 +30,40 @@ type CheckoutStep = "shipping" | "payment" | "confirmation";
 export function CheckoutContent() {
   const router = useRouter();
   const { toast } = useToast();
+  const { data: session } = useSession();
   const { items, clearCart, getTotalPrice } = useCartStore();
   const [currentStep, setCurrentStep] = useState<CheckoutStep>("shipping");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
     phone: "",
     address: "",
     city: "",
     note: "",
   });
+
+  useEffect(() => {
+    if (!session?.user) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/me");
+        if (!res.ok) return;
+        const json = await res.json();
+        if (cancelled || !json?.data) return;
+        setFormData((prev) => ({
+          ...prev,
+          phone: prev.phone || json.data.phone || "",
+        }));
+      } catch (error) {
+        console.error("Failed to prefill checkout from profile:", error);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [session?.user]);
 
   const totalPrice = getTotalPrice();
   const shippingThreshold = 50000;
@@ -59,6 +78,15 @@ export function CheckoutContent() {
   };
 
   const handleSubmitOrder = async () => {
+    if (!formData.phone.trim()) {
+      toast({
+        title: "Téléphone requis",
+        description: "Veuillez renseigner un numéro de téléphone pour valider la commande.",
+        variant: "destructive",
+      });
+      setCurrentStep("shipping");
+      return;
+    }
     setIsSubmitting(true);
     try {
       const orderData = {
@@ -137,7 +165,7 @@ export function CheckoutContent() {
           Panier
         </Link>
         <ChevronRight className="size-4" />
-        <span className="text-foreground">Checkout</span>
+        <span className="text-foreground">Commande</span>
       </nav>
 
       {/* Progress Steps */}
@@ -181,7 +209,7 @@ export function CheckoutContent() {
           <div className="size-24 mx-auto mb-6 rounded-full bg-green-100 flex items-center justify-center">
             <Check className="size-12 text-green-600" />
           </div>
-          <h1 className="font-heading font-bold text-3xl text-[#73442A] mb-3">
+          <h1 className="font-heading font-bold text-3xl text-brand-brown mb-3">
             Commande confirmée !
           </h1>
           <p className="text-muted-foreground mb-2">
@@ -225,74 +253,21 @@ export function CheckoutContent() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="flex flex-col gap-4">
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="flex flex-col gap-2">
-                        <label htmlFor="firstName" className="text-sm font-medium">
-                          Prénom
-                        </label>
-                        <div className="relative">
-                          <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
-                          <Input
-                            id="firstName"
-                            name="firstName"
-                            placeholder="Votre prénom"
-                            value={formData.firstName}
-                            onChange={handleInputChange}
-                            className="pl-9"
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <label htmlFor="lastName" className="text-sm font-medium">
-                          Nom
-                        </label>
-                        <div className="relative">
-                          <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
-                          <Input
-                            id="lastName"
-                            name="lastName"
-                            placeholder="Votre nom"
-                            value={formData.lastName}
-                            onChange={handleInputChange}
-                            className="pl-9"
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="flex flex-col gap-2">
-                        <label htmlFor="email" className="text-sm font-medium">
-                          Email
-                        </label>
-                        <div className="relative">
-                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
-                          <Input
-                            id="email"
-                            name="email"
-                            type="email"
-                            placeholder="votre@email.com"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            className="pl-9"
-                          />
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <label htmlFor="phone" className="text-sm font-medium">
-                          Téléphone
-                        </label>
-                        <div className="relative">
-                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
-                          <Input
-                            id="phone"
-                            name="phone"
-                            placeholder="+221 77 123 45 67"
-                            value={formData.phone}
-                            onChange={handleInputChange}
-                            className="pl-9"
-                          />
-                        </div>
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="phone" className="text-sm font-medium">
+                        Téléphone <span className="text-destructive">*</span>
+                      </label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
+                        <Input
+                          id="phone"
+                          name="phone"
+                          placeholder="+221 77 123 45 67"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          className="pl-9"
+                          required
+                        />
                       </div>
                     </div>
 
@@ -347,6 +322,7 @@ export function CheckoutContent() {
                       size="lg"
                       className="mt-4"
                       onClick={() => setCurrentStep("payment")}
+                      disabled={!formData.phone.trim()}
                     >
                       Continuer vers le paiement
                       <ArrowRight data-icon="inline-end" />
@@ -409,7 +385,7 @@ export function CheckoutContent() {
                     <div className="bg-muted/50 rounded-xl p-4">
                       <h4 className="font-medium mb-3">Adresse de livraison</h4>
                       <p className="text-sm text-muted-foreground">
-                        {formData.firstName} {formData.lastName}
+                        {session?.user?.name}
                         <br />
                         {formData.address}
                         <br />

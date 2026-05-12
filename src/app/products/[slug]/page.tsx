@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Header, Footer } from "@/components/layout";
 import { ProductDetailContent } from "./product-detail-content";
 import { prisma } from "@/lib/prisma";
@@ -15,6 +16,37 @@ export async function generateStaticParams() {
     select: { slug: true },
   });
   return products.map((p) => ({ slug: p.slug }));
+}
+
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const product = await prisma.product.findUnique({
+    where: { slug },
+    select: { name: true, description: true, imageUrl: true, isActive: true },
+  });
+
+  if (!product || !product.isActive) {
+    return { title: "Produit introuvable" };
+  }
+
+  const description = product.description.slice(0, 160);
+
+  return {
+    title: product.name,
+    description,
+    openGraph: {
+      title: product.name,
+      description,
+      images: product.imageUrl ? [{ url: product.imageUrl }] : undefined,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.name,
+      description,
+      images: product.imageUrl ? [product.imageUrl] : undefined,
+    },
+  };
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {

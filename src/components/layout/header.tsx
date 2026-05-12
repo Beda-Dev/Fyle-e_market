@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ShoppingCart,
@@ -11,6 +12,7 @@ import {
   User,
   Heart,
   ChevronDown,
+  ChevronRight,
   LogOut,
   ShieldCheck,
   Package,
@@ -40,16 +42,37 @@ const navLinks = [
 ];
 
 export function Header() {
+  const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+  const [isMobileCategoriesOpen, setIsMobileCategoriesOpen] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
   const { items, openCart } = useCartStore();
   const favoriteItems = useFavoritesStore((state) => state.items);
   const [mounted, setMounted] = useState(false);
   const { data: session, status } = useSession();
   const isAdmin = session?.user?.role === "ADMIN";
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    if (!q) return;
+    router.push(`/products?search=${encodeURIComponent(q)}`);
+    setIsSearchOpen(false);
+    setIsMobileMenuOpen(false);
+  };
+
+  useEffect(() => {
+    if (isSearchOpen) {
+      // Focus l'input quand le tiroir s'ouvre
+      setTimeout(() => mobileSearchInputRef.current?.focus(), 100);
+    }
+  }, [isSearchOpen]);
 
   useEffect(() => {
     setMounted(true);
@@ -174,28 +197,62 @@ export function Header() {
             </nav>
 
             {/* Search Bar - Desktop */}
-            <div className="hidden lg:flex items-center flex-1 max-w-md mx-8">
+            <form
+              onSubmit={handleSearchSubmit}
+              className="hidden lg:flex items-center flex-1 max-w-md mx-8"
+            >
               <div className="relative w-full">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" data-icon />
                 <Input
                   type="search"
                   placeholder="Rechercher un produit..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 bg-muted/50 border-0 focus-visible:ring-primary"
                 />
               </div>
-            </div>
+            </form>
 
             {/* Actions */}
             <div className="flex items-center gap-2 lg:gap-4">
               {/* Search button - Mobile */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="lg:hidden"
-                aria-label="Rechercher"
-              >
-                <Search data-icon />
-              </Button>
+              <Sheet open={isSearchOpen} onOpenChange={setIsSearchOpen}>
+                <SheetTrigger
+                  render={
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="lg:hidden"
+                      aria-label="Rechercher"
+                    >
+                      <Search data-icon />
+                    </Button>
+                  }
+                />
+                <SheetContent side="top" className="h-auto pb-6">
+                  <SheetHeader>
+                    <SheetTitle className="text-left font-heading">
+                      Rechercher
+                    </SheetTitle>
+                  </SheetHeader>
+                  <form onSubmit={handleSearchSubmit} className="mt-4 px-4">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
+                      <Input
+                        ref={mobileSearchInputRef}
+                        type="search"
+                        placeholder="Rechercher un produit..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10 h-11"
+                      />
+                    </div>
+                    <Button type="submit" className="w-full mt-3" disabled={!searchQuery.trim()}>
+                      Rechercher
+                    </Button>
+                  </form>
+                </SheetContent>
+              </Sheet>
 
               {/* Wishlist */}
               <Link href="/favorites">
@@ -326,26 +383,90 @@ export function Header() {
                   <SheetHeader>
                     <SheetTitle className="text-left font-heading">Menu</SheetTitle>
                   </SheetHeader>
-                  <nav className="flex flex-col gap-4 mt-8">
-                    {navLinks.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="text-lg font-medium py-2 border-b border-border hover:text-primary transition-colors"
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
+                  <nav className="flex flex-col gap-1 mt-8">
+                    {navLinks.map((link) =>
+                      link.hasDropdown ? (
+                        <div key={link.href} className="border-b border-border">
+                          <button
+                            type="button"
+                            onClick={() => setIsMobileCategoriesOpen((v) => !v)}
+                            className="w-full flex items-center justify-between text-lg font-medium py-3 hover:text-primary transition-colors"
+                            aria-expanded={isMobileCategoriesOpen}
+                          >
+                            <span>{link.label}</span>
+                            <ChevronRight
+                              className={`size-5 transition-transform ${
+                                isMobileCategoriesOpen ? "rotate-90" : ""
+                              }`}
+                            />
+                          </button>
+                          <AnimatePresence initial={false}>
+                            {isMobileCategoriesOpen && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: "auto", opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="overflow-hidden"
+                              >
+                                <div className="flex flex-col gap-1 pb-3 pl-3">
+                                  <Link
+                                    href="/categories"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="text-sm text-muted-foreground py-2 hover:text-primary transition-colors"
+                                  >
+                                    Toutes les catégories
+                                  </Link>
+                                  {categories.map((category) => (
+                                    <Link
+                                      key={category.id}
+                                      href={`/products?category=${category.slug}`}
+                                      onClick={() => setIsMobileMenuOpen(false)}
+                                      className="flex items-center justify-between py-2 text-sm hover:text-primary transition-colors"
+                                    >
+                                      <span>{category.name}</span>
+                                      {typeof category.productCount === "number" && (
+                                        <Badge variant="secondary" className="ml-2 text-xs">
+                                          {category.productCount}
+                                        </Badge>
+                                      )}
+                                    </Link>
+                                  ))}
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      ) : (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="text-lg font-medium py-3 border-b border-border hover:text-primary transition-colors"
+                        >
+                          {link.label}
+                        </Link>
+                      )
+                    )}
                     <div className="pt-4 flex flex-col gap-3">
-                      {<Button variant="outline" className="w-full justify-start gap-2">
-                        <User data-icon="inline-start" />
-                        Mon compte
-                      </Button>}
-                      <Button variant="outline" className="w-full justify-start gap-2">
-                        <Heart data-icon="inline-start" />
-                        Liste de souhaits
-                      </Button>
+                      <Link
+                        href={status === "authenticated" ? "/profile" : "/login"}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <Button variant="outline" className="w-full justify-start gap-2">
+                          <User data-icon="inline-start" />
+                          {status === "authenticated" ? "Mon compte" : "Se connecter"}
+                        </Button>
+                      </Link>
+                      <Link
+                        href="/favorites"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        <Button variant="outline" className="w-full justify-start gap-2">
+                          <Heart data-icon="inline-start" />
+                          Liste de souhaits
+                        </Button>
+                      </Link>
                     </div>
                   </nav>
                 </SheetContent>
@@ -359,7 +480,7 @@ export function Header() {
       <CartDrawer />
 
       {/* Spacer for fixed header */}
-      <div className="h-16 lg:h-28" />
+      <div className="h-14 lg:h-24" />
     </>
   );
 }

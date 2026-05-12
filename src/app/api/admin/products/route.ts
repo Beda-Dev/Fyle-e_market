@@ -5,17 +5,41 @@ import {
   parseJson,
   requireAdmin,
 } from '@/lib/api-helpers'
-import { productCreateSchema } from '@/lib/schemas'
+import { adminListQuerySchema, productCreateSchema } from '@/lib/schemas'
 import { serializeProduct } from '@/lib/serializers'
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
     await requireAdmin()
-    const products = await prisma.product.findMany({
-      include: { category: { select: { id: true, name: true, slug: true } } },
-      orderBy: { createdAt: 'desc' },
+    const url = new URL(request.url)
+    const parsed = adminListQuerySchema.safeParse({
+      page: url.searchParams.get('page') ?? undefined,
+      pageSize: url.searchParams.get('pageSize') ?? undefined,
     })
-    return Response.json({ data: products.map(serializeProduct) })
+    if (!parsed.success) {
+      throw new ApiError(400, 'Paramètres invalides', parsed.error.flatten())
+    }
+    const { page, pageSize } = parsed.data
+
+    const [total, products] = await prisma.$transaction([
+      prisma.product.count(),
+      prisma.product.findMany({
+        include: { category: { select: { id: true, name: true, slug: true } } },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+    ])
+
+    return Response.json({
+      data: products.map(serializeProduct),
+      meta: {
+        page,
+        pageSize,
+        total,
+        totalPages: Math.max(1, Math.ceil(total / pageSize)),
+      },
+    })
   } catch (error) {
     return handleApiError(error)
   }

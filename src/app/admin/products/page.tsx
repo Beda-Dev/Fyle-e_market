@@ -17,16 +17,31 @@ import {
 } from "@/components/ui/table";
 import { formatPrice, type Product } from "@/lib/mock-data";
 
+const PAGE_SIZE = 20;
+
+interface ListMeta {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+}
+
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [meta, setMeta] = useState<ListMeta | null>(null);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/admin/products")
+    setLoading(true);
+    fetch(`/api/admin/products?page=${page}&pageSize=${PAGE_SIZE}`)
       .then((r) => r.json())
-      .then((j) => setProducts(j.data ?? []))
+      .then((j) => {
+        setProducts(j.data ?? []);
+        setMeta(j.meta ?? null);
+      })
       .finally(() => setLoading(false));
-  }, []);
+  }, [page]);
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -42,7 +57,9 @@ export default function AdminProductsPage() {
               <div>
                 <h1 className="font-heading font-bold text-lg">Gestion des produits</h1>
                 <p className="text-sm text-muted-foreground">
-                  {loading ? "Chargement..." : `${products.length} produits`}
+                  {loading
+                    ? "Chargement..."
+                    : `${meta?.total ?? products.length} produit${(meta?.total ?? products.length) > 1 ? "s" : ""}`}
                 </p>
               </div>
             </div>
@@ -143,6 +160,30 @@ export default function AdminProductsPage() {
             </Table>
           </CardContent>
         </Card>
+
+        {meta && meta.totalPages > 1 && (
+          <div className="flex items-center justify-center gap-3 mt-6">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page <= 1 || loading}
+            >
+              Précédent
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              Page {meta.page} / {meta.totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setPage((p) => Math.min(meta.totalPages, p + 1))}
+              disabled={page >= meta.totalPages || loading}
+            >
+              Suivant
+            </Button>
+          </div>
+        )}
       </main>
     </div>
   );

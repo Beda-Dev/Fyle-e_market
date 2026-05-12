@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProductCard } from "@/components/products/product-card";
+import { ProductReviews } from "./product-reviews";
 import { useCartStore } from "@/store/cart-store";
 import { useFavoritesStore } from "@/store/favorites-store";
 import {
@@ -290,6 +291,12 @@ export function ProductDetailContent({
           >
             Livraison
           </TabsTrigger>
+          <TabsTrigger
+            value="reviews"
+            className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-6 py-3"
+          >
+            Avis
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="description" className="pt-6">
           <div className="prose max-w-none">
@@ -306,6 +313,9 @@ export function ProductDetailContent({
               <li>Durabilité garantie</li>
             </ul>
           </div>
+        </TabsContent>
+        <TabsContent value="reviews" className="pt-6">
+          <ProductReviews productSlug={product.slug} />
         </TabsContent>
         <TabsContent value="shipping" className="pt-6">
           <div className="space-y-4 text-muted-foreground">

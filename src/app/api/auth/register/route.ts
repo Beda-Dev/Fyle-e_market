@@ -1,10 +1,12 @@
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 import { handleApiError, jsonError, parseJson } from '@/lib/api-helpers'
+import { rateLimit } from '@/lib/rate-limit'
 import { registerSchema } from '@/lib/schemas'
 
 export async function POST(request: Request) {
   try {
+    rateLimit(request, { key: 'register', limit: 5, windowMs: 60 * 60 * 1000 })
     const data = await parseJson(request, registerSchema)
 
     const existing = await prisma.user.findUnique({ where: { email: data.email } })

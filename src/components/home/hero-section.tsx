@@ -33,7 +33,7 @@ export function HeroSection() {
   return (
     <section className="relative overflow-hidden">
       {/* Main Hero */}
-      <div className="relative min-h-[600px] lg:min-h-[700px] bg-gradient-to-br from-[#F9DEC9] via-[#F9DEC9]/50 to-white">
+      <div className="relative min-h-[600px] lg:min-h-[700px] bg-gradient-to-br from-brand-beige via-brand-beige/50 to-white">
         <div className="container mx-auto px-4 py-16 lg:py-24">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Text content */}
@@ -96,7 +96,7 @@ export function HeroSection() {
               <div className="relative aspect-square max-w-lg mx-auto lg:max-w-none">
                 {/* Decorative circles */}
                 <div className="absolute -top-8 -right-8 size-72 rounded-full bg-primary/10 blur-3xl" />
-                <div className="absolute -bottom-8 -left-8 size-48 rounded-full bg-[#E8B287]/30 blur-2xl" />
+                <div className="absolute -bottom-8 -left-8 size-48 rounded-full bg-brand-orange-light/30 blur-2xl" />
                 
                 {/* Main image */}
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl">

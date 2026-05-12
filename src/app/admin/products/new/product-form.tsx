@@ -398,7 +398,7 @@ export function ProductForm() {
             {/* ─── Champs ─── */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2 flex flex-col gap-2">
-                <Label htmlFor="name" style={{ color: "#73442A" }}>
+                <Label htmlFor="name" className="text-brand-brown">
                   Nom du produit
                 </Label>
                 <Input
@@ -412,7 +412,7 @@ export function ProductForm() {
               </div>
 
               <div className="sm:col-span-2 flex flex-col gap-2">
-                <Label htmlFor="slug" style={{ color: "#73442A" }}>
+                <Label htmlFor="slug" className="text-brand-brown">
                   Slug (URL)
                 </Label>
                 <Input
@@ -432,7 +432,7 @@ export function ProductForm() {
               </div>
 
               <div className="sm:col-span-2 flex flex-col gap-2">
-                <Label htmlFor="description" style={{ color: "#73442A" }}>
+                <Label htmlFor="description" className="text-brand-brown">
                   Description
                 </Label>
                 <textarea
@@ -447,7 +447,7 @@ export function ProductForm() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <Label htmlFor="price" style={{ color: "#73442A" }}>
+                <Label htmlFor="price" className="text-brand-brown">
                   Prix (FCFA)
                 </Label>
                 <Input
@@ -463,7 +463,7 @@ export function ProductForm() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <Label htmlFor="originalPrice" style={{ color: "#73442A" }}>
+                <Label htmlFor="originalPrice" className="text-brand-brown">
                   Prix barre (optionnel)
                 </Label>
                 <Input
@@ -478,7 +478,7 @@ export function ProductForm() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <Label htmlFor="stock" style={{ color: "#73442A" }}>
+                <Label htmlFor="stock" className="text-brand-brown">
                   Stock
                 </Label>
                 <Input
@@ -493,7 +493,7 @@ export function ProductForm() {
               </div>
 
               <div className="flex flex-col gap-2">
-                <Label htmlFor="categoryId" style={{ color: "#73442A" }}>
+                <Label htmlFor="categoryId" className="text-brand-brown">
                   Categorie
                 </Label>
                 <select

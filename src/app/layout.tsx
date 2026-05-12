@@ -14,11 +14,22 @@ const poppins = Poppins({
   variable: "--font-heading",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "Eburnie | E-Commerce Premium",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Eburnie | E-Commerce Premium",
+    template: "%s | Eburnie",
+  },
   description:
     "Découvrez Eburnie, votre destination shopping en ligne pour des produits de qualité. Une expérience d'achat moderne, élégante et intuitive.",
   keywords: ["e-commerce", "shopping", "boutique en ligne", "Eburnie"],
+  openGraph: {
+    type: "website",
+    siteName: "Eburnie",
+    locale: "fr_FR",
+  },
 };
 
 export const viewport: Viewport = {

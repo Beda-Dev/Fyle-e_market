@@ -1,9 +1,19 @@
 import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
+import { rateLimit } from "@/lib/rate-limit"
+import { ApiError } from "@/lib/api-helpers"
 
 export async function POST(request: Request) {
   try {
+    try {
+      rateLimit(request, { key: "reset-password", limit: 10, windowMs: 60 * 60 * 1000 })
+    } catch (err) {
+      if (err instanceof ApiError) {
+        return NextResponse.json({ error: err.message }, { status: err.status })
+      }
+      throw err
+    }
     const { token, password } = await request.json()
 
     if (!token || !password) {

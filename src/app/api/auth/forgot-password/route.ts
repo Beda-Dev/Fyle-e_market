@@ -2,9 +2,19 @@ import { NextResponse } from "next/server"
 import crypto from "crypto"
 import { prisma } from "@/lib/prisma"
 import { sendEmail, getResetPasswordEmailHtml } from "@/lib/email"
+import { rateLimit } from "@/lib/rate-limit"
+import { ApiError } from "@/lib/api-helpers"
 
 export async function POST(request: Request) {
   try {
+    try {
+      rateLimit(request, { key: "forgot-password", limit: 3, windowMs: 60 * 60 * 1000 })
+    } catch (err) {
+      if (err instanceof ApiError) {
+        return NextResponse.json({ error: err.message }, { status: err.status })
+      }
+      throw err
+    }
     const { email } = await request.json()
 
     if (!email) {

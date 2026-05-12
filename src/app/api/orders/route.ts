@@ -8,6 +8,7 @@ import {
 } from '@/lib/api-helpers'
 import { orderCreateSchema } from '@/lib/schemas'
 import { serializeOrder } from '@/lib/serializers'
+import { sendEmail, getOrderConfirmationEmailHtml } from '@/lib/email'
 
 export async function GET() {
   try {
@@ -74,6 +75,36 @@ export async function POST(request: Request) {
         include: { items: { include: { product: true } } },
       })
     })
+
+    // Envoi de l'email de confirmation (non bloquant — un échec d'email ne casse pas la commande)
+    try {
+      const customer = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { email: true, firstName: true },
+      })
+      if (customer?.email) {
+        const totalNumber = Number(order.totalAmount.toString())
+        await sendEmail({
+          to: customer.email,
+          subject: `Confirmation de votre commande #${order.id.slice(-8).toUpperCase()}`,
+          html: getOrderConfirmationEmailHtml({
+            firstName: customer.firstName,
+            orderId: order.id,
+            items: order.items.map((it) => ({
+              name: it.product.name,
+              quantity: it.quantity,
+              unitPrice: Number(it.unitPrice.toString()),
+            })),
+            totalAmount: totalNumber,
+            addressLine: order.addressLine,
+            city: order.city,
+            phone: order.phone,
+          }),
+        })
+      }
+    } catch (emailError) {
+      console.error('[orders] failed to send confirmation email:', emailError)
+    }
 
     return Response.json({ data: serializeOrder(order) }, { status: 201 })
   } catch (error) {

@@ -55,6 +55,68 @@ export function getContactEmailHtml(name: string, email: string, subject: string
   `
 }
 
+interface OrderEmailItem {
+  name: string
+  quantity: number
+  unitPrice: number
+}
+
+export function getOrderConfirmationEmailHtml(params: {
+  firstName: string
+  orderId: string
+  items: OrderEmailItem[]
+  totalAmount: number
+  addressLine?: string | null
+  city?: string | null
+  phone: string
+}) {
+  const { firstName, orderId, items, totalAmount, addressLine, city, phone } = params
+  const fmt = (n: number) => `${n.toLocaleString('fr-FR')} FCFA`
+  const itemsHtml = items
+    .map(
+      (it) => `
+      <tr>
+        <td style="padding: 8px 0; color: #333;">${it.name} <span style="color:#888;">× ${it.quantity}</span></td>
+        <td style="padding: 8px 0; color: #333; text-align: right;">${fmt(it.unitPrice * it.quantity)}</td>
+      </tr>`
+    )
+    .join('')
+
+  const addressBlock =
+    addressLine || city
+      ? `<p style="color:#555; margin:0;">${[addressLine, city].filter(Boolean).join(', ')}</p>`
+      : ''
+
+  return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="color: #73442A; margin: 0;">Eburnie</h1>
+        <p style="color: #888; font-size: 14px;">Confirmation de commande</p>
+      </div>
+      <div style="background: #f9f9f9; border-radius: 8px; padding: 30px;">
+        <h2 style="color: #333; margin-top: 0;">Merci pour votre commande, ${firstName} !</h2>
+        <p style="color: #555;">Nous avons bien reçu votre commande <strong>#${orderId.slice(-8).toUpperCase()}</strong>. Vous serez contacté(e) sous peu pour la livraison.</p>
+
+        <h3 style="color:#333; margin-top: 24px;">Récapitulatif</h3>
+        <table style="width:100%; border-collapse: collapse;">
+          ${itemsHtml}
+          <tr>
+            <td style="padding: 12px 0; border-top:1px solid #ddd; font-weight:bold; color:#333;">Total</td>
+            <td style="padding: 12px 0; border-top:1px solid #ddd; text-align:right; font-weight:bold; color:#F97316;">${fmt(totalAmount)}</td>
+          </tr>
+        </table>
+
+        <h3 style="color:#333; margin-top: 24px;">Livraison</h3>
+        ${addressBlock}
+        <p style="color:#555; margin:4px 0 0;">Téléphone : ${phone}</p>
+      </div>
+      <p style="color: #aaa; font-size: 12px; text-align: center; margin-top: 20px;">
+        © ${new Date().getFullYear()} Eburnie. Tous droits réservés.
+      </p>
+    </div>
+  `
+}
+
 export function getResetPasswordEmailHtml(resetUrl: string, firstName: string) {
   return `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">

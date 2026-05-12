@@ -52,7 +52,7 @@ export function PromoBannerSection() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="relative overflow-hidden rounded-2xl lg:rounded-3xl bg-[#F9DEC9] flex-1 min-h-[200px]"
+              className="relative overflow-hidden rounded-2xl lg:rounded-3xl bg-brand-beige flex-1 min-h-[200px]"
             >
               <Image
                 src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600"
@@ -60,7 +60,7 @@ export function PromoBannerSection() {
                 fill
                 className="object-cover opacity-30"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#F9DEC9] to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-brand-beige to-transparent" />
               <div className="relative z-10 p-6 lg:p-8 flex flex-col justify-center h-full">
                 <h4 className="font-heading font-bold text-2xl text-brand-brown mb-2">
                   Mode Tendance
@@ -83,7 +83,7 @@ export function PromoBannerSection() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="relative overflow-hidden rounded-2xl lg:rounded-3xl bg-[#E8B287]/30 flex-1 min-h-[200px]"
+              className="relative overflow-hidden rounded-2xl lg:rounded-3xl bg-brand-orange-light/30 flex-1 min-h-[200px]"
             >
               <Image
                 src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600"
@@ -91,7 +91,7 @@ export function PromoBannerSection() {
                 fill
                 className="object-cover opacity-30"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#E8B287]/80 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-brand-orange-light/80 to-transparent" />
               <div className="relative z-10 p-6 lg:p-8 flex flex-col justify-center h-full">
                 <h4 className="font-heading font-bold text-2xl text-brand-brown mb-2">
                   Maison & Déco

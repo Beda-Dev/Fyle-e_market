@@ -82,6 +82,21 @@ export const orderStatusUpdateSchema = z.object({
   status: orderStatusSchema,
 })
 
+export const reviewCreateSchema = z.object({
+  rating: z.number().int().min(1).max(5),
+  comment: z.string().max(2000).nullable().optional(),
+})
+
+export const reviewListQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(50).default(10),
+})
+
+export const adminListQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+})
+
 export const settingsUpdateSchema = z.object({
   customerService: z.string().min(1).max(80),
   email: z.string().email().max(120).nullable().optional(),

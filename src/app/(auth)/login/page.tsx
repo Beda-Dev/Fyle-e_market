@@ -54,8 +54,7 @@ export default function LoginPage() {
         initial={{ x: -50, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
-        style={{ backgroundColor: "#F9DEC9" }}
+        className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-brand-beige"
       >
         <div className="relative z-10 flex flex-col justify-between w-full px-12 py-12">
           {/* <h1 className="text-xl font-semibold" style={{ color: "var(--color-brand-brown)" }}>Eburnie</h1> */}

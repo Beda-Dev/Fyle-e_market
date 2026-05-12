@@ -1,10 +1,19 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import { Prisma } from "@prisma/client";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { Header, Footer } from "@/components/layout";
 import { OrdersContent } from "./orders-content";
 import { Suspense } from "react";
+
+export const dynamic = "force-dynamic";
+
+const orderInclude = {
+  items: { include: { product: true } },
+} satisfies Prisma.OrderInclude;
+
+type OrderWithItems = Prisma.OrderGetPayload<{ include: typeof orderInclude }>;
 
 function OrdersLoadingSkeleton() {
   return (
@@ -30,17 +39,16 @@ export default async function OrdersPage() {
     redirect("/login");
   }
 
-  const orders = await prisma.order.findMany({
-    where: { userId: session.user.id },
-    include: {
-      items: {
-        include: {
-          product: true,
-        },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+  let orders: OrderWithItems[] = [];
+  try {
+    orders = await prisma.order.findMany({
+      where: { userId: session.user.id },
+      include: orderInclude,
+      orderBy: { createdAt: "desc" },
+    });
+  } catch (error) {
+    console.error("[orders] failed to load orders:", error);
+  }
 
   return (
     <>

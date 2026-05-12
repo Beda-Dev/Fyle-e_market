@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -55,9 +55,16 @@ interface ProductsContentProps {
 export function ProductsContent({ products, categories }: ProductsContentProps) {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "";
+  const initialSearch = searchParams.get("search") || "";
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+
+  // Synchronise depuis l'URL si l'utilisateur relance une recherche depuis le header
+  useEffect(() => {
+    setSearchQuery(searchParams.get("search") || "");
+    setSelectedCategory(searchParams.get("category") || "");
+  }, [searchParams]);
   const [selectedPriceRange, setSelectedPriceRange] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");

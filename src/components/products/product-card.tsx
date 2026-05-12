@@ -44,8 +44,17 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             />
           </Link>
 
-          {/* Badges */}
-          <div className="absolute top-3 left-3 flex flex-col gap-2">
+          {/* Badges gauche : Nouveau / Remise / Stock — toujours visibles */}
+          <div className="absolute top-3 left-3 flex flex-col gap-2 items-start">
+            {product.stock === 0 ? (
+              <Badge variant="destructive" className="font-semibold shadow-sm">
+                Rupture
+              </Badge>
+            ) : product.stock < 5 ? (
+              <Badge className="bg-amber-500 hover:bg-amber-500 text-white font-semibold shadow-sm">
+                Plus que {product.stock}
+              </Badge>
+            ) : null}
             {product.isNew && (
               <Badge className="bg-brand-brown text-white hover:bg-brand-brown">
                 Nouveau
@@ -124,15 +133,6 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             )}
           </div>
 
-          {/* Stock indicator */}
-          {product.stock < 5 && product.stock > 0 && (
-            <p className="text-xs text-amber-600 mt-2">
-              Plus que {product.stock} en stock
-            </p>
-          )}
-          {product.stock === 0 && (
-            <p className="text-xs text-destructive mt-2">Rupture de stock</p>
-          )}
         </CardContent>
       </Card>
     </motion.div>
