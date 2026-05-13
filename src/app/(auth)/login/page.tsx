@@ -11,6 +11,7 @@ import Image from "next/image"
 import { motion } from "framer-motion"
 import { signIn, getSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { useToast } from "@/hooks/use-toast"
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -19,6 +20,14 @@ export default function LoginPage() {
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const { toast } = useToast()
+
+  const handleGoogleClick = () => {
+    toast({
+      title: "Bientôt disponible",
+      description: "La connexion avec Google n'est pas encore disponible.",
+    })
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -197,6 +206,8 @@ export default function LoginPage() {
 
               <div>
                 <Button
+                  type="button"
+                  onClick={handleGoogleClick}
                   variant="outline"
                   className="w-full h-12 border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-lg bg-white shadow-none cursor-pointer"
                 >

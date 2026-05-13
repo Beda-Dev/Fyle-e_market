@@ -27,6 +27,13 @@ export default function RegisterPage() {
   const router = useRouter()
   const { toast } = useToast()
 
+  const handleGoogleClick = () => {
+    toast({
+      title: "Bientôt disponible",
+      description: "L'inscription avec Google n'est pas encore disponible.",
+    })
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
@@ -302,6 +309,8 @@ export default function RegisterPage() {
 
               <div>
                 <Button
+                  type="button"
+                  onClick={handleGoogleClick}
                   variant="outline"
                   className="w-full h-12 border-gray-200 hover:bg-gray-50 hover:text-gray-900 rounded-lg bg-white shadow-none cursor-pointer"
                 >
