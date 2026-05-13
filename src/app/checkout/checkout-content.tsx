@@ -66,9 +66,31 @@ export function CheckoutContent() {
   }, [session?.user]);
 
   const totalPrice = getTotalPrice();
+  const [shippingCost, setShippingCost] = useState(2500);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch("/api/settings");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data?.shippingCost) {
+            setShippingCost(Number(json.data.shippingCost.toString()));
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch shipping cost:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
+
   const shippingThreshold = 50000;
-  const shippingCost = totalPrice >= shippingThreshold ? 0 : 2500;
-  const finalTotal = totalPrice + shippingCost;
+  const finalShippingCost = totalPrice >= shippingThreshold ? 0 : shippingCost;
+  const finalTotal = totalPrice + finalShippingCost;
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -481,10 +503,10 @@ export function CheckoutContent() {
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Livraison</span>
                     <span>
-                      {shippingCost === 0 ? (
+                      {finalShippingCost === 0 ? (
                         <span className="text-green-600">Gratuite</span>
                       ) : (
-                        formatPrice(shippingCost)
+                        formatPrice(finalShippingCost)
                       )}
                     </span>
                   </div>

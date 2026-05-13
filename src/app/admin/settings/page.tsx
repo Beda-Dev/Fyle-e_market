@@ -18,6 +18,7 @@ interface SettingsData {
   whatsapp: string | null;
   slogan: string;
   location: string | null;
+  shippingCost: number | null;
 }
 
 export default function AdminSettingsPage() {
@@ -29,6 +30,7 @@ export default function AdminSettingsPage() {
     email: "",
     whatsapp: "",
     slogan: "",
+    shippingCost: 2500,
     location: "",
   });
 
@@ -43,6 +45,7 @@ export default function AdminSettingsPage() {
             whatsapp: res.data.whatsapp || "",
             slogan: res.data.slogan || "",
             location: res.data.location || "",
+            shippingCost: res.data.shippingCost ? Number(res.data.shippingCost.toString()) : 2500,
           });
         }
       })
@@ -153,6 +156,17 @@ export default function AdminSettingsPage() {
                     value={settings.location || ""}
                     onChange={(e) => setSettings({ ...settings, location: e.target.value })}
                     placeholder="Abidjan, Côte d'Ivoire"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="shippingCost">Frais de livraison (FCFA)</Label>
+                  <Input
+                    id="shippingCost"
+                    type="number"
+                    value={settings.shippingCost || ""}
+                    onChange={(e) => setSettings({ ...settings, shippingCost: e.target.value ? Number(e.target.value) : null })}
+                    placeholder="2500"
                   />
                 </div>
               </CardContent>

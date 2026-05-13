@@ -47,6 +47,7 @@ async function main() {
         slogan:
           "L'élégance ivoirienne livrée chez vous. Produits soigneusement sélectionnés, paiement à la livraison.",
         location: 'Abidjan, Côte d\'Ivoire',
+        shippingCost: 2500,
       },
     })
     console.log('  setting  → created')

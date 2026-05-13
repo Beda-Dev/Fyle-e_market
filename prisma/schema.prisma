@@ -127,6 +127,7 @@ model Order {
   id          String      @id @default(cuid())
   status      OrderStatus @default(PENDING)
   totalAmount Decimal     @db.Decimal(10, 2) // snapshot du total au moment de la commande
+  shippingCost Decimal    @db.Decimal(10, 2) // snapshot des frais de livraison au moment de la commande
 
   // Adresse de livraison (snapshot — indépendante du profil utilisateur)
   addressLine String?
@@ -171,12 +172,13 @@ model OrderItem {
 }
 
 model Setting {
-  id        String   @id @default(cuid())
+  id  String @id @default(cuid())
   customerService   String
-  email     String?
-  whatsapp  String?
-  slogan    String   @db.Text
-  location  String?
-  createdAt DateTime @default(now())
+  email         String?
+  whatsapp     String?
+  slogan        String   @db.Text
+  location      String?
+  shippingCost  Decimal? @db.Decimal(10, 2) // frais de livraison par défaut (optionnel)
+  createdAt     DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

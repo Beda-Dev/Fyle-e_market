@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -12,7 +12,6 @@ import {
   ShoppingBag,
   ArrowRight,
   Truck,
-  Tag,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,10 +23,29 @@ import { formatPrice } from "@/lib/mock-data";
 export function CartContent() {
   const { items, updateQuantity, removeItem, clearCart, getTotalPrice } =
     useCartStore();
-  const [promoCode, setPromoCode] = useState("");
+  const [shippingCost, setShippingCost] = useState(2500);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch("/api/settings");
+        if (res.ok) {
+          const json = await res.json();
+          if (json.data?.shippingCost) {
+            setShippingCost(Number(json.data.shippingCost.toString()));
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch shipping cost:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   const totalPrice = getTotalPrice();
-  const shippingCost = 2500;
   const finalTotal = totalPrice + shippingCost;
 
   if (items.length === 0) {
@@ -182,21 +200,7 @@ export function CartContent() {
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
               {/* Promo code */}
-              <div className="flex gap-2">
-                <div className="relative flex-1">
-                  <Tag className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
-                  <Input
-                    placeholder="Code promo"
-                    value={promoCode}
-                    onChange={(e) => setPromoCode(e.target.value)}
-                    className="pl-9"
-                  />
-                </div>
-                <Button variant="outline">Appliquer</Button>
-              </div>
-
-              <Separator />
-
+              
               {/* Totals */}
               <div className="flex flex-col gap-3">
                 <div className="flex justify-between text-sm">

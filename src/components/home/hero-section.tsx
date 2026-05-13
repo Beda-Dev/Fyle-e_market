@@ -54,7 +54,7 @@ export function HeroSection() {
                 Profitez d&apos;une expérience d&apos;achat unique et personnalisée.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                <Button size="lg"  className="text-base">
+                <Button size="lg"  className="text-base h-14 px-8 text-lg">
                   <Link href="/products">
                     Explorer la boutique
                     <ArrowRight data-icon="inline-end" />

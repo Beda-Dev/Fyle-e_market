@@ -60,6 +60,13 @@ export async function POST(request: Request) {
         })
       }
 
+      // Récupérer les frais de livraison depuis les settings
+      const setting = await tx.setting.findFirst({ orderBy: { createdAt: 'asc' } })
+      const defaultShippingCost = setting?.shippingCost ? new Prisma.Decimal(setting.shippingCost.toString()) : new Prisma.Decimal(2500)
+      const shippingThreshold = new Prisma.Decimal(50000)
+      const shippingCost = total.gte(shippingThreshold) ? new Prisma.Decimal(0) : defaultShippingCost
+      const finalTotal = total.plus(shippingCost)
+
       return tx.order.create({
         data: {
           userId: user.id,
@@ -69,7 +76,8 @@ export async function POST(request: Request) {
           longitude: data.longitude ?? null,
           latitude: data.latitude ?? null,
           note: data.note ?? null,
-          totalAmount: total,
+          totalAmount: finalTotal,
+          shippingCost: shippingCost,
           items: { createMany: { data: orderItemsData } },
         },
         include: { items: { include: { product: true } } },

@@ -228,9 +228,6 @@ export function ProductDetailContent({
               <Heart data-icon className={isProductFavorite ? "fill-current" : ""} />
             </Button>
 
-            <Button variant="outline" size="icon" className="shrink-0">
-              <Share2 data-icon />
-            </Button>
           </div>
 
           {/* Stock indicator */}

@@ -122,4 +122,5 @@ export const settingsUpdateSchema = z.object({
   whatsapp: z.string().max(30).nullable().optional(),
   slogan: z.string().min(1),
   location: z.string().max(200).nullable().optional(),
+  shippingCost: z.number().positive().nullable().optional(),
 })
