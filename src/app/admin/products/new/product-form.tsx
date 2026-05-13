@@ -411,25 +411,8 @@ export function ProductForm() {
                 />
               </div>
 
-              <div className="sm:col-span-2 flex flex-col gap-2">
-                <Label htmlFor="slug" className="text-brand-brown">
-                  Slug (URL)
-                </Label>
-                <Input
-                  id="slug"
-                  value={slug}
-                  onChange={(e) => {
-                    setSlug(slugify(e.target.value))
-                    setSlugTouched(true)
-                  }}
-                  placeholder="casque-audio-sans-fil-premium"
-                  required
-                  className="h-11 font-mono text-sm"
-                />
-                <p className="text-xs text-muted-foreground">
-                  /products/{slug || "..."}
-                </p>
-              </div>
+              {/* Slug masqué : généré automatiquement depuis le nom */}
+              <input type="hidden" name="slug" value={slug} />
 
               <div className="sm:col-span-2 flex flex-col gap-2">
                 <Label htmlFor="description" className="text-brand-brown">

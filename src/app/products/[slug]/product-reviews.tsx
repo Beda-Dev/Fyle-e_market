@@ -7,6 +7,7 @@ import { Star, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { confirm } from "@/hooks/use-confirm";
 
 interface Review {
   id: string;
@@ -141,7 +142,13 @@ export function ProductReviews({ productSlug }: ProductReviewsProps) {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Supprimer cet avis ?")) return;
+    const ok = await confirm({
+      title: "Supprimer cet avis ?",
+      description: "Cette action est irréversible.",
+      confirmLabel: "Supprimer",
+      variant: "destructive",
+    });
+    if (!ok) return;
     try {
       const res = await fetch(`/api/reviews/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Suppression impossible");

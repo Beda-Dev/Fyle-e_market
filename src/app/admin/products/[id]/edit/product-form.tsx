@@ -74,10 +74,13 @@ export function ProductForm({ product }: ProductFormProps) {
   const [isActive, setIsActive] = useState(product.isActive)
   const [images, setImages] = useState<PendingImage[]>([])
 
-  // Images existantes du produit
-  const [existingImages, setExistingImages] = useState<string[]>(
-    (product.images as string[]) || []
-  )
+  // Images existantes du produit (image principale en premier, puis galerie)
+  const [existingImages, setExistingImages] = useState<string[]>(() => {
+    const gallery = (product.images as string[]) || []
+    const main = product.imageUrl
+    // Évite les doublons si imageUrl est déjà dans la galerie
+    return main ? [main, ...gallery.filter((u) => u !== main)] : gallery
+  })
 
   useEffect(() => {
     fetch("/api/categories")
@@ -178,11 +181,9 @@ export function ProductForm({ product }: ProductFormProps) {
 
     setSubmitting(true)
     try {
-      let finalImageUrl = product.imageUrl
-      let finalImagePublicId = product.imagePublicId
-      let finalGallery: string[] = existingImages
-
       // 1) Upload des nouvelles images si présentes
+      let uploadedUrls: string[] = []
+      let newMainPublicId: string | null = null
       if (images.length > 0) {
         const fd = new FormData()
         for (const img of images) fd.append("files", img.file)
@@ -197,16 +198,26 @@ export function ProductForm({ product }: ProductFormProps) {
         const uploaded: UploadedImage[] = Array.isArray(uploadJson.data)
           ? uploadJson.data
           : [uploadJson.data]
-
-        // Utiliser la nouvelle image principale si uploadée
-        if (uploaded.length > 0) {
-          finalImageUrl = uploaded[0].url
-          finalImagePublicId = uploaded[0].publicId
-          finalGallery = [...existingImages, ...uploaded.slice(1).map((u) => u.url)]
-        }
+        uploadedUrls = uploaded.map((u) => u.url)
+        newMainPublicId = uploaded[0]?.publicId ?? null
       }
 
-      // 2) Mettre à jour le produit
+      // 2) Construire la liste finale ordonnée (existantes + nouvelles)
+      const allImages = [...existingImages, ...uploadedUrls]
+      if (allImages.length === 0) {
+        throw new Error("Ajoute au moins une image")
+      }
+      const finalImageUrl = allImages[0]
+      const finalGallery = allImages.slice(1)
+      // Le publicId principal change uniquement si l'image principale a changé
+      const finalImagePublicId =
+        finalImageUrl === product.imageUrl
+          ? product.imagePublicId
+          : uploadedUrls.includes(finalImageUrl)
+          ? newMainPublicId
+          : null
+
+      // 3) Mettre à jour le produit
       const updateRes = await fetch(`/api/admin/products/${product.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -460,25 +471,8 @@ export function ProductForm({ product }: ProductFormProps) {
                 />
               </div>
 
-              <div className="sm:col-span-2 flex flex-col gap-2">
-                <Label htmlFor="slug" style={{ color: "var(--color-brand-brown)" }}>
-                  Slug (URL)
-                </Label>
-                <Input
-                  id="slug"
-                  value={slug}
-                  onChange={(e) => {
-                    setSlug(slugify(e.target.value))
-                    setSlugTouched(true)
-                  }}
-                  placeholder="casque-audio-sans-fil-premium"
-                  required
-                  className="h-11 font-mono text-sm"
-                />
-                <p className="text-xs text-muted-foreground">
-                  /products/{slug || "..."}
-                </p>
-              </div>
+              {/* Slug masqué : généré automatiquement depuis le nom */}
+              <input type="hidden" name="slug" value={slug} />
 
               <div className="sm:col-span-2 flex flex-col gap-2">
                 <Label htmlFor="description" style={{ color: "var(--color-brand-brown)" }}>

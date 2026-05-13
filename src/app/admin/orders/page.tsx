@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
+import { confirm } from "@/hooks/use-confirm";
 import { formatPrice, type Order } from "@/lib/mock-data";
 
 type OrderStatus = "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED";
@@ -131,13 +132,15 @@ export default function AdminOrdersPage() {
 
   const handleBulkUpdate = async () => {
     if (!bulkStatus || selectedIds.size === 0) return;
-    if (
-      bulkStatus === "CANCELLED" &&
-      !confirm(
-        `Annuler ${selectedIds.size} commande${selectedIds.size > 1 ? "s" : ""} ? Le stock des produits sera restauré.`
-      )
-    ) {
-      return;
+    if (bulkStatus === "CANCELLED") {
+      const ok = await confirm({
+        title: `Annuler ${selectedIds.size} commande${selectedIds.size > 1 ? "s" : ""} ?`,
+        description: "Le stock des produits sera restauré automatiquement.",
+        confirmLabel: "Annuler les commandes",
+        cancelLabel: "Retour",
+        variant: "destructive",
+      });
+      if (!ok) return;
     }
 
     setBulkUpdating(true);

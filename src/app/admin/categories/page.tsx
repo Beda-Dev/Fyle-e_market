@@ -28,6 +28,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
+import { confirm } from "@/hooks/use-confirm";
 
 interface AdminCategory {
   id: string;
@@ -196,13 +197,13 @@ export default function AdminCategoriesPage() {
   };
 
   const handleDelete = async (category: AdminCategory) => {
-    if (
-      !confirm(
-        `Supprimer la catégorie "${category.name}" ?\nCette action est irréversible.`
-      )
-    ) {
-      return;
-    }
+    const ok = await confirm({
+      title: `Supprimer la catégorie "${category.name}" ?`,
+      description: "Cette action est irréversible.",
+      confirmLabel: "Supprimer",
+      variant: "destructive",
+    });
+    if (!ok) return;
     try {
       const res = await fetch(`/api/admin/categories/${category.id}`, {
         method: "DELETE",
@@ -381,22 +382,8 @@ export default function AdminCategoriesPage() {
                   />
                 </div>
 
-                <div className="flex flex-col gap-2">
-                  <Label htmlFor="cat-slug" className="text-brand-brown">
-                    Slug (URL) <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="cat-slug"
-                    value={form.slug}
-                    onChange={(e) => handleSlugChange(e.target.value)}
-                    placeholder="electronique"
-                    required
-                    className="h-10 font-mono text-sm"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    /categories/{form.slug || "..."}
-                  </p>
-                </div>
+                {/* Slug masqué : généré automatiquement depuis le nom */}
+                <input type="hidden" name="cat-slug" value={form.slug} />
 
                 <div className="flex flex-col gap-2">
                   <Label htmlFor="cat-desc" className="text-brand-brown">

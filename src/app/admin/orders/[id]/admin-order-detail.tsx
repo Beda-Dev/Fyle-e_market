@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { confirm } from "@/hooks/use-confirm";
 import { formatPrice } from "@/lib/mock-data";
 
 type OrderStatus = "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED";
@@ -86,13 +87,15 @@ export function AdminOrderDetail({ order, user }: AdminOrderDetailProps) {
   const updateStatus = async (newStatus: OrderStatus) => {
     if (newStatus === status) return;
 
-    if (
-      newStatus === "CANCELLED" &&
-      !confirm(
-        "Annuler cette commande ? Le stock des produits sera restauré automatiquement."
-      )
-    ) {
-      return;
+    if (newStatus === "CANCELLED") {
+      const ok = await confirm({
+        title: "Annuler cette commande ?",
+        description: "Le stock des produits sera restauré automatiquement.",
+        confirmLabel: "Annuler la commande",
+        cancelLabel: "Retour",
+        variant: "destructive",
+      });
+      if (!ok) return;
     }
 
     setUpdating(true);

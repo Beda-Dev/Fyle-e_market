@@ -27,6 +27,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
+import { confirm } from "@/hooks/use-confirm";
 
 type Role = "ADMIN" | "CLIENT";
 
@@ -101,7 +102,12 @@ export default function AdminUsersPage() {
   const handleRoleToggle = async (user: AdminUser) => {
     const newRole: Role = user.role === "ADMIN" ? "CLIENT" : "ADMIN";
     const action = newRole === "ADMIN" ? "promouvoir en administrateur" : "rétrograder en client";
-    if (!confirm(`Voulez-vous ${action} ${user.firstName} ${user.lastName} ?`)) return;
+    const ok = await confirm({
+      title: `Changer le rôle de ${user.firstName} ${user.lastName} ?`,
+      description: `Voulez-vous ${action} cet utilisateur ?`,
+      confirmLabel: "Confirmer",
+    });
+    if (!ok) return;
 
     setPendingActionId(user.id);
     try {
@@ -130,11 +136,12 @@ export default function AdminUsersPage() {
   };
 
   const handleResetPassword = async (user: AdminUser) => {
-    if (
-      !confirm(
-        `Envoyer un email de réinitialisation de mot de passe à ${user.email} ?`
-      )
-    )
+    const ok = await confirm({
+      title: "Réinitialiser le mot de passe ?",
+      description: `Un email de réinitialisation sera envoyé à ${user.email}.`,
+      confirmLabel: "Envoyer l'email",
+    });
+    if (!ok)
       return;
 
     setPendingActionId(user.id);
@@ -161,11 +168,13 @@ export default function AdminUsersPage() {
   };
 
   const handleDelete = async (user: AdminUser) => {
-    if (
-      !confirm(
-        `Supprimer définitivement le compte de ${user.firstName} ${user.lastName} ?\nCette action est irréversible.`
-      )
-    )
+    const ok = await confirm({
+      title: `Supprimer ${user.firstName} ${user.lastName} ?`,
+      description: "Cette action est irréversible. Le compte sera définitivement supprimé.",
+      confirmLabel: "Supprimer",
+      variant: "destructive",
+    });
+    if (!ok)
       return;
 
     setPendingActionId(user.id);

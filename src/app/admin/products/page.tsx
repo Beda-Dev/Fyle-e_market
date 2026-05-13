@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Plus, Edit, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Edit, Trash2, EyeOff } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatPrice, type Product } from "@/lib/mock-data";
+import { useToast } from "@/hooks/use-toast";
+import { confirm } from "@/hooks/use-confirm";
 
 const PAGE_SIZE = 20;
 
@@ -27,12 +29,14 @@ interface ListMeta {
 }
 
 export default function AdminProductsPage() {
+  const { toast } = useToast();
   const [products, setProducts] = useState<Product[]>([]);
   const [meta, setMeta] = useState<ListMeta | null>(null);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadProducts = () => {
     setLoading(true);
     fetch(`/api/admin/products?page=${page}&pageSize=${PAGE_SIZE}`)
       .then((r) => r.json())
@@ -41,7 +45,50 @@ export default function AdminProductsPage() {
         setMeta(j.meta ?? null);
       })
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    loadProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
+
+  const handleDelete = async (product: Product) => {
+    const ok = await confirm({
+      title: `Supprimer "${product.name}" ?`,
+      description:
+        "Si ce produit a déjà été commandé, il sera simplement masqué pour préserver l'historique des commandes.",
+      confirmLabel: "Supprimer",
+      variant: "destructive",
+    });
+    if (!ok) return;
+    setDeletingId(product.id);
+    try {
+      const res = await fetch(`/api/admin/products/${product.id}`, {
+        method: "DELETE",
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Suppression impossible");
+      if (json.data?.deactivated) {
+        toast({
+          title: "Produit masqué",
+          description:
+            "Ce produit a déjà des commandes : il a été masqué au lieu d'être supprimé.",
+          variant: "success",
+        });
+      } else {
+        toast({ title: "Produit supprimé", variant: "success" });
+      }
+      loadProducts();
+    } catch (e) {
+      toast({
+        title: "Erreur",
+        description: e instanceof Error ? e.message : "Erreur inconnue",
+        variant: "error",
+      });
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -133,23 +180,36 @@ export default function AdminProductsPage() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {product.isFeatured && (
-                        <Badge className="bg-brand-orange">En vedette</Badge>
-                      )}
-                      {product.isNew && (
-                        <Badge variant="secondary" className="ml-2">
-                          Nouveau
-                        </Badge>
-                      )}
+                      <div className="flex flex-wrap items-center gap-1">
+                        {!product.isActive && (
+                          <Badge variant="outline" className="gap-1 text-muted-foreground">
+                            <EyeOff className="size-3" />
+                            Masqué
+                          </Badge>
+                        )}
+                        {product.isFeatured && (
+                          <Badge className="bg-brand-orange">En vedette</Badge>
+                        )}
+                        {product.isNew && (
+                          <Badge variant="secondary">Nouveau</Badge>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1">
                         <Link href={`/admin/products/${product.id}/edit`}>
-                          <Button variant="ghost" size="icon">
+                          <Button variant="ghost" size="icon" aria-label="Modifier">
                             <Edit className="size-4" />
                           </Button>
                         </Link>
-                        <Button variant="ghost" size="icon" className="text-destructive">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive"
+                          onClick={() => handleDelete(product)}
+                          disabled={deletingId === product.id}
+                          aria-label="Supprimer"
+                        >
                           <Trash2 className="size-4" />
                         </Button>
                       </div>

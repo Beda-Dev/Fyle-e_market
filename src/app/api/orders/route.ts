@@ -32,11 +32,26 @@ export async function POST(request: Request) {
     const order = await prisma.$transaction(async (tx) => {
       const productIds = data.items.map((i) => i.productId)
       const products = await tx.product.findMany({
-        where: { id: { in: productIds }, isActive: true },
+        where: { id: { in: productIds } },
+        select: { id: true, name: true, isActive: true, stock: true, price: true },
       })
 
-      if (products.length !== productIds.length) {
-        throw new ApiError(400, 'Un ou plusieurs produits sont introuvables ou inactifs')
+      const foundIds = new Set(products.map((p) => p.id))
+      const missing = productIds.filter((id) => !foundIds.has(id))
+      if (missing.length > 0) {
+        throw new ApiError(
+          400,
+          `${missing.length} produit(s) de votre panier ne sont plus disponibles. Veuillez les retirer pour continuer.`
+        )
+      }
+
+      const inactive = products.filter((p) => !p.isActive)
+      if (inactive.length > 0) {
+        const names = inactive.map((p) => `"${p.name}"`).join(', ')
+        throw new ApiError(
+          400,
+          `Les produits suivants ne sont plus disponibles : ${names}. Veuillez les retirer de votre panier.`
+        )
       }
 
       let total = new Prisma.Decimal(0)
